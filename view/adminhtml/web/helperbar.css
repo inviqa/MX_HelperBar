@@ -1,12 +1,16 @@
 .helper-bar  {
     position: fixed;
     bottom: 0;
-    width: 100%;
+    width: 400px;
     z-index: 9999;
+    border-top-right-radius: 5px;
 }
 
-h1{
+.helper-bar-close {
+    width: 10px;
     color: white;
+    float: right;
+    cursor: hand;
 }
 
 .column {
@@ -32,21 +36,22 @@ h1{
     height: 60px;
 }
 
-.helper-bar-purple {
+.helper-bar-developer {
     background-color: #782B8F;
 }
 
-.helper-bar-teal {
+.helper-bar-default {
     background-color: #00A79D;
 }
 
-.helper-bar-blue {
+.helper-bar-production {
     background-color: #334982;
 }
 
 .env {
     color: white;
     font-size: 24px;
+    padding-top: 10px;
 }
 
 .env > span {

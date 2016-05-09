@@ -4,12 +4,19 @@
  */
 ?>
 <?php if ($block->isEnabled()): ?>
-    <div class="helper-bar helper-bar-purple">
+    <div class="helper-bar helper-bar-<?php echo $block->getMode(); ?>">
         <span class="mage-mode column mage-mode-<?php echo $block->getMode(); ?>"></span>
 
         <span class="env column">
             <?php echo $block->getEnv(); ?>
         </span>
+
+        <span class="helper-bar-close" id="helper-bar-close">X</span>
+        <script type="text/x-magento-init">
+            {
+                "#helper-bar-close": { "MX_HelperBar/js/helperbar": {} }
+            }
+        </script>
     </div>
 <?php endif; ?>
 
