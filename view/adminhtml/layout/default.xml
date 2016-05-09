@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="MX_HelperBar::helperbar.css"/>
+    </head>
+    <body>
+        <referenceContainer name="after.body.start">
+            <block class="MX\HelperBar\Block\Adminhtml\HelperBar" name="mx_helperbar" as="mx_helperbar"
+                template="MX_HelperBar::helperbar.phtml"  />
+        </referenceContainer>
+    </body>
+</page>

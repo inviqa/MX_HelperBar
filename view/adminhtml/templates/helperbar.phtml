@@ -1,0 +1,17 @@
+<?php
+/**
+ * @see \MX\HelperBar\Block\Adminhtml\HelperBar
+ */
+?>
+<?php if ($block->isEnabled()): ?>
+    <div class="helper-bar">
+        <span class="env column">
+            <h1>Env: <?php echo $block->getEnv(); ?></h1>
+        </span>
+
+        <span class="mage-mode column">
+            <h1>Mode: <?php echo $block->getMode(); ?></h1>
+        </span>
+    </div>
+<?php endif; ?>
+
