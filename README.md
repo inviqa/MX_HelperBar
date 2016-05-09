@@ -19,7 +19,7 @@ Then add the module to the require section to ensure it gets loaded.
 
 ```json
    "require": {
-        "MX/HelperBar": "dev-master"
+        "mx/helper-bar": "dev-master"
    }
 ```
 

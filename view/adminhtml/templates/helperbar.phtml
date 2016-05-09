@@ -4,13 +4,11 @@
  */
 ?>
 <?php if ($block->isEnabled()): ?>
-    <div class="helper-bar">
-        <span class="env column">
-            <h1>Env: <?php echo $block->getEnv(); ?></h1>
-        </span>
+    <div class="helper-bar helper-bar-purple">
+        <span class="mage-mode column mage-mode-<?php echo $block->getMode(); ?>"></span>
 
-        <span class="mage-mode column">
-            <h1>Mode: <?php echo $block->getMode(); ?></h1>
+        <span class="env column">
+            <?php echo $block->getEnv(); ?>
         </span>
     </div>
 <?php endif; ?>

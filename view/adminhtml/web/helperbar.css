@@ -1,5 +1,4 @@
 .helper-bar  {
-    background-color: black;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -13,4 +12,45 @@ h1{
 .column {
     float: left;
     margin-left: 10px;
+}
+
+.mage-mode-developer {
+    background-image:url('images/Flash-Left-Developer.jpg');
+    width: 225px;
+    height: 60px;
+}
+
+.mage-mode-production {
+    background-image:url('images/Flash-Left-Production.jpg');
+    width: 225px;
+    height: 60px;
+}
+
+.mage-mode-default {
+    background-image:url('images/Flash-Left-Default.jpg');
+    width: 225px;
+    height: 60px;
+}
+
+.helper-bar-purple {
+    background-color: #782B8F;
+}
+
+.helper-bar-teal {
+    background-color: #00A79D;
+}
+
+.helper-bar-blue {
+    background-color: #334982;
+}
+
+.env {
+    color: white;
+    font-size: 24px;
+}
+
+.env > span {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }
