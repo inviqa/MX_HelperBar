@@ -19,9 +19,17 @@ Then add the module to the require section to ensure it gets loaded.
 
 ```json
    "require": {
-        "mx/helper-bar": "dev-master"
+        "mx/helper-bar": "1.*"
    }
 ```
 
 For each of the instances that you want to be displayed you need to modify `app/etc/env.php` and set the variable `HELPER_BAR` to be
 what value you want to be shown in the admin for each of the pipeline instances.
+
+```php
+<?php
+return array (
+  // ...
+  'HELPER_BAR' => 'YOUR VALUE',
+  // ...
+```
