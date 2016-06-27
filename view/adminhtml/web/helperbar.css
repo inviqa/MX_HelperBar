@@ -1,7 +1,7 @@
 .helper-bar  {
     position: fixed;
     bottom: 0;
-    width: 400px;
+    width: 100%;
     z-index: 9999;
     border-top-right-radius: 5px;
 }

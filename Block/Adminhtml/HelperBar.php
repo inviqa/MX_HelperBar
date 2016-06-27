@@ -28,6 +28,7 @@ namespace MX\HelperBar\Block\Adminhtml;
  */
 use Magento\Backend\Block\Template;
 use Magento\Framework\App\DeploymentConfig\Reader;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\App\State;
 
@@ -35,6 +36,11 @@ class HelperBar extends Template
 {
     /** @var \Magento\Framework\App\DeploymentConfig\Reader $reader */
     protected $reader;
+
+    /**
+     * @var \Magento\Framework\App\ProductMetadataInterface
+     */
+    protected $productMetadata;
 
     /**
      * HelperBar constructor.
@@ -45,10 +51,13 @@ class HelperBar extends Template
      */
     public function __construct(
         Reader $reader,
+        ProductMetadataInterface $productMetadata,
         Template\Context $context,
         array $data = []
-    ) {
+    )
+    {
         $this->reader = $reader;
+        $this->productMetadata = $productMetadata;
         parent::__construct($context, $data);
     }
 
@@ -65,18 +74,6 @@ class HelperBar extends Template
     }
 
     /**
-     * Return the current environment that Magento 2 is running in
-     *
-     * @return string | null
-     */
-    public function getEnv()
-    {
-        $env = $this->reader->load(ConfigFilePool::APP_ENV);
-
-        return isset($env['HELPER_BAR']) ? $env['HELPER_BAR'] : null;
-    }
-
-    /**
      * Return the current mode that Magento 2 is running in
      *
      * @return string | null
@@ -86,5 +83,18 @@ class HelperBar extends Template
         $env = $this->reader->load(ConfigFilePool::APP_ENV);
 
         return isset($env[State::PARAM_MODE]) ? $env[State::PARAM_MODE] : null;
+    }
+
+    /**
+     * Return the framework name, edition and the version
+     *
+     * @return string
+     */
+    public function getProductMetadata()
+    {
+        return sprintf("%s %s %s",
+            $this->productMetadata->getName(),
+            $this->productMetadata->getEdition(),
+            $this->productMetadata->getVersion());
     }
 }
