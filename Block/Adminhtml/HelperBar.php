@@ -69,8 +69,7 @@ class HelperBar extends Template
     public function isEnabled()
     {
         $env = $this->reader->load(ConfigFilePool::APP_ENV);
-
-        return isset($env['HELPER_BAR']);
+        return isset($env['HELPER_BAR']) && $env['HELPER_BAR'] === true;
     }
 
     /**
