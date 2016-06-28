@@ -13,7 +13,7 @@
     cursor: hand;
 }
 
-.mage-mode-developer > .column {
+.helper-bar > .column {
     float: left;
     margin-left: 10px;
 }
@@ -48,13 +48,13 @@
     background-color: #334982;
 }
 
-.mage-mode-developer > .env {
+.helper-bar > .env {
     color: white;
     font-size: 24px;
     padding-top: 10px;
 }
 
-.mage-mode-developer > .env > span {
+.helper-bar > .env > span {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
