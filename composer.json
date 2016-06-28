@@ -1,5 +1,5 @@
 {
-  "name": "mx/helper-bar",
+  "name": "mx/module-helper-bar",
   "description": "N/A",
   "require": {
     "php": "~5.5.0|~5.6.0|~7.0.0",
