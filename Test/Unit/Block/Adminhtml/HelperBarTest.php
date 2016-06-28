@@ -17,11 +17,11 @@
  */
 namespace MX\HelperBar\Test\Unit\Block\Adminhtml;
 
-use \MX\HelperBar\Block\Adminhtml\HelperBar as HelperBarBlock;
+use \MX\HelperBar\Block\Adminhtml\HelperBar;
 use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\App\State;
 
-class HelperBar extends \PHPUnit_Framework_TestCase
+class HelperBarTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \MX\HelperBar\Block\Adminhtml\HelperBar */
     protected $helperBar;
@@ -41,7 +41,7 @@ class HelperBar extends \PHPUnit_Framework_TestCase
         $this->productMetadataInterfaceMock = $this->getActualMock('\Magento\Framework\App\ProductMetadataInterface');
         $this->contextMock = $this->getActualMock('\Magento\Backend\Block\Template\Context');
 
-        $this->helperBar = new HelperBarBlock(
+        $this->helperBar = new HelperBar(
             $this->readerMock,
             $this->productMetadataInterfaceMock,
             $this->contextMock
@@ -75,8 +75,8 @@ class HelperBar extends \PHPUnit_Framework_TestCase
     {
         return [
             "HELPER_BAR setting missing" => [false, []],
-            "HELPER_BAR setting set to true" => [true, [HelperBarBlock::ENV_PARAM => true]],
-            "HELPER_BAR setting set to false" => [false, [HelperBarBlock::ENV_PARAM => false]]
+            "HELPER_BAR setting set to true" => [true, [HelperBar::ENV_PARAM => true]],
+            "HELPER_BAR setting set to false" => [false, [HelperBar::ENV_PARAM => false]]
         ];
     }
 
