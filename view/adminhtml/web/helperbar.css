@@ -13,7 +13,7 @@
     cursor: hand;
 }
 
-.column {
+.helper-bar > .column {
     float: left;
     margin-left: 10px;
 }
@@ -48,13 +48,13 @@
     background-color: #334982;
 }
 
-.env {
+.helper-bar > .env {
     color: white;
     font-size: 24px;
     padding-top: 10px;
 }
 
-.env > span {
+.helper-bar > .env > span {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
