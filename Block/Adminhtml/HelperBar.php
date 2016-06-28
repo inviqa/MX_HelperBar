@@ -34,12 +34,12 @@ use Magento\Framework\App\State;
 
 class HelperBar extends Template
 {
+    const ENV_PARAM = 'HELPER_BAR';
+
     /** @var \Magento\Framework\App\DeploymentConfig\Reader $reader */
     protected $reader;
 
-    /**
-     * @var \Magento\Framework\App\ProductMetadataInterface
-     */
+    /** @var \Magento\Framework\App\ProductMetadataInterface */
     protected $productMetadata;
 
     /**
@@ -69,7 +69,7 @@ class HelperBar extends Template
     public function isEnabled()
     {
         $env = $this->reader->load(ConfigFilePool::APP_ENV);
-        return isset($env['HELPER_BAR']) && $env['HELPER_BAR'] === true;
+        return isset($env[self::ENV_PARAM]) && $env[self::ENV_PARAM] === true;
     }
 
     /**
@@ -80,7 +80,6 @@ class HelperBar extends Template
     public function getMode()
     {
         $env = $this->reader->load(ConfigFilePool::APP_ENV);
-
         return isset($env[State::PARAM_MODE]) ? $env[State::PARAM_MODE] : null;
     }
 

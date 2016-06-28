@@ -17,7 +17,9 @@
  */
 namespace MX\HelperBar\Test\Unit\Block\Adminhtml;
 
+use \MX\HelperBar\Block\Adminhtml\HelperBar as HelperBarBlock;
 use Magento\Framework\Config\File\ConfigFilePool;
+use Magento\Framework\App\State;
 
 class HelperBar extends \PHPUnit_Framework_TestCase
 {
@@ -39,7 +41,7 @@ class HelperBar extends \PHPUnit_Framework_TestCase
         $this->productMetadataInterfaceMock = $this->getActualMock('\Magento\Framework\App\ProductMetadataInterface');
         $this->contextMock = $this->getActualMock('\Magento\Backend\Block\Template\Context');
 
-        $this->helperBar = new \MX\HelperBar\Block\Adminhtml\HelperBar(
+        $this->helperBar = new HelperBarBlock(
             $this->readerMock,
             $this->productMetadataInterfaceMock,
             $this->contextMock
@@ -58,28 +60,59 @@ class HelperBar extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider displayHelpBarWhenIsEnabledInApplicationSettingsDataProvider
+     * @dataProvider displayValidation
      */
-    public function testDisplayHelpBarWhenIsEnabledInApplicationSettings($isEnabledExpected, $helperBarSetting)
+    public function testDisplayValidation($isEnabled, $appEnvSettings)
     {
-        if (is_null($helperBarSetting)) {
-            $mockAppEnvConfig = [];
-        } else {
-            $mockAppEnvConfig = ["HELPER_BAR" => $helperBarSetting];
-        }
         $this->readerMock->expects($this->once())
             ->method('load')
             ->with(ConfigFilePool::APP_ENV)
-            ->will($this->returnValue($mockAppEnvConfig));
-        $this->assertSame($isEnabledExpected, $this->helperBar->isEnabled($isEnabledExpected));
+            ->will($this->returnValue($appEnvSettings));
+        $this->assertSame($isEnabled, $this->helperBar->isEnabled());
     }
 
-    public function displayHelpBarWhenIsEnabledInApplicationSettingsDataProvider()
+    public function displayValidation()
     {
         return [
-            "HELPER_BAR setting missing" => [false, null],
-            "HELPER_BAR setting set to true" => [true, true],
-            "HELPER_BAR setting set to false" => [false, false]
+            "HELPER_BAR setting missing" => [false, []],
+            "HELPER_BAR setting set to true" => [true, [HelperBarBlock::ENV_PARAM => true]],
+            "HELPER_BAR setting set to false" => [false, [HelperBarBlock::ENV_PARAM => false]]
         ];
+    }
+
+    /**
+     * @dataProvider getMode
+     */
+    public function testGetMode($mode, $environment)
+    {
+        $this->readerMock->expects($this->once())
+            ->method('load')
+            ->with(ConfigFilePool::APP_ENV)
+            ->will($this->returnValue($environment));
+        $this->assertSame($mode, $this->helperBar->getMode());
+    }
+
+    public function getMode()
+    {
+        return [
+            "MAGE_MODE setting missing" => [null, null],
+            "MAGE_MODE is developer" => [State::MODE_DEVELOPER, [State::PARAM_MODE => State::MODE_DEVELOPER]],
+            "MAGE_MODE is default" => [State::MODE_DEFAULT, [State::PARAM_MODE => State::MODE_DEFAULT]],
+            "MAGE_MODE is production" => [State::MODE_PRODUCTION, [State::PARAM_MODE => State::MODE_PRODUCTION]],
+        ];
+    }
+
+    public function testGetProductMetadata()
+    {
+        $this->productMetadataInterfaceMock->expects($this->once())
+            ->method('getName')
+            ->will($this->returnValue('Magento'));
+        $this->productMetadataInterfaceMock->expects($this->once())
+            ->method('getEdition')
+            ->will($this->returnValue('Enterprise'));
+        $this->productMetadataInterfaceMock->expects($this->once())
+            ->method('getVersion')
+            ->will($this->returnValue('3.0.0'));
+        $this->assertSame('Magento Enterprise 3.0.0', $this->helperBar->getProductMetadata());
     }
 }
