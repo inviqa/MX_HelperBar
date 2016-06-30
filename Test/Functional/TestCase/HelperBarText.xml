@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
-    <testCase name="MX\HelpBar\Test\TestCase\HelperBarTest" summary="Helper Bar Visible">
-        <variation name="HelperBarTestVariation1">
-            <constraint name="Magento\User\Test\Constraint\AssertUserSuccessLogin" />
-        </variation>
-    </testCase>
-</config>
