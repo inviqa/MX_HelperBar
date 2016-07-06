@@ -87,4 +87,11 @@ class HelperBar extends Template
 
         return isset($env[State::PARAM_MODE]) ? $env[State::PARAM_MODE] : null;
     }
+    
+    /**
+     * Return the url to the mass refresh ajax controller
+     */
+    public function getMassRefreshUrl() {
+        return "admin/helperbar/ajax_cache/massrefresh";
+    }
 }
