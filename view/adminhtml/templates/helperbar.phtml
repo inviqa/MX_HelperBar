@@ -2,19 +2,30 @@
 /**
  * @see \MX\HelperBar\Block\Adminhtml\HelperBar
  */
+
 ?>
 <?php if ($block->isEnabled()): ?>
-    <div class="helper-bar helper-bar-<?php echo $block->getMode(); ?>">
+    <div id="helper-bar" class="helper-bar helper-bar-<?php echo $block->getMode(); ?>">
         <span class="mage-mode column mage-mode-<?php echo $block->getMode(); ?>"></span>
+
+        <input type="text" name="name" id="helper-bar-command-search">
 
         <span class="env column">
             <?php echo $block->getEnv(); ?>
         </span>
 
-        <span class="helper-bar-close" id="helper-bar-close">X</span>
+        <span id="helper-bar-close" class="helper-bar-close">X</span>
         <script type="text/x-magento-init">
             {
-                "#helper-bar-close": { "MX_HelperBar/js/helperbar": {} }
+                "#helper-bar":
+                {
+                    "MX_HelperBar/js/helperbar":
+                    {
+                        "closeSelector": "#helper-bar-close",
+                        "commandSearchSelector": "#helper-bar-command-search",
+                        "massRefreshUrl": "<?= /* @escapeNotVerified */ $block->getMassRefreshUrl(); ?>"
+                    }
+                }
             }
         </script>
     </div>
