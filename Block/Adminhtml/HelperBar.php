@@ -27,37 +27,62 @@ namespace MX\HelperBar\Block\Adminhtml;
  * @link http://sessiondigital.com
  */
 use Magento\Backend\Block\Template;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig\Reader;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\App\State;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 class HelperBar extends Template
 {
     const ENV_PARAM = 'HELPER_BAR';
+    const CONFIG_DATA_PATH = "dev/debug/helper_bar_admin";
 
-    /** @var \Magento\Framework\App\DeploymentConfig\Reader $reader */
+    /**
+     * @var Reader $reader
+     */
     protected $reader;
 
-    /** @var \Magento\Framework\App\ProductMetadataInterface */
+    /**
+     * @var ProductMetadataInterface
+     */
     protected $productMetadata;
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
 
     /**
      * HelperBar constructor.
      *
      * @param Reader $reader
+     * @param ProductMetadataInterface $productMetadata
+     * @param ScopeConfigInterface $scopeConfig
+     * @param StoreManagerInterface $storeManager
      * @param Template\Context $context
      * @param array $data
      */
     public function __construct(
         Reader $reader,
         ProductMetadataInterface $productMetadata,
+        ScopeConfigInterface $scopeConfig,
+        StoreManagerInterface $storeManager,
         Template\Context $context,
         array $data = []
     )
     {
         $this->reader = $reader;
         $this->productMetadata = $productMetadata;
+        $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
         parent::__construct($context, $data);
     }
 
@@ -68,8 +93,8 @@ class HelperBar extends Template
      */
     public function isEnabled()
     {
-        $env = $this->reader->load(ConfigFilePool::APP_ENV);
-        return isset($env[self::ENV_PARAM]) && $env[self::ENV_PARAM] === true;
+        $storeCode = $this->storeManager->getStore()->getCode();
+        return $this->scopeConfig->getValue(self::CONFIG_DATA_PATH, ScopeInterface::SCOPE_STORE, $storeCode) === '1';
     }
 
     /**
