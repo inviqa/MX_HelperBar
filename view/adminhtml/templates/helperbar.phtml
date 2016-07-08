@@ -4,19 +4,31 @@
  */
 ?>
 <?php if ($block->isEnabled()): ?>
-    <div class="helper-bar helper-bar-<?php echo $block->getMode(); ?>">
-        <span class="mage-mode column mage-mode-<?php echo $block->getMode(); ?>"></span>
+    <div id="helper-bar" class="helper-bar helper-bar-<?= $block->getMode(); ?>">
+        <span class="mage-mode column mage-mode-<?= $block->getMode(); ?>"></span>
 
-        <span class="env column">
-            <?php echo $block->getProductMetadata() ?> Powered by <a href="https://inviqa.com/">Inviqa</a>
+        <span class="env column white">
+            <?= $block->getProductMetadata(); ?>
         </span>
 
-        <span class="helper-bar-close" id="helper-bar-close">X</span>
+        <span class="env column">
+            <input id="helper-bar-command-search">
+        </span>
+
+        <span id="helper-bar-close" class="helper-bar-close">X</span>
         <script type="text/x-magento-init">
             {
-                "#helper-bar-close": { "MX_HelperBar/js/helperbar": {} }
+                "#helper-bar":
+                {
+                    "MX_HelperBar/js/helperbar":
+                    {
+                        "closeSelector": "#helper-bar-close",
+                        "commandSearchSelector": "#helper-bar-command-search",
+                        "massRefreshUrl": "<?= /* @escapeNotVerified */ $block->getMassRefreshUrl(); ?>",
+                        "cacheTypes": <?= /* @escapeNotVerified */ $block->getCacheTypesJson(); ?>
+                    }
+                }
             }
         </script>
     </div>
 <?php endif; ?>
-

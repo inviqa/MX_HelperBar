@@ -27,6 +27,7 @@ namespace MX\HelperBar\Block\Adminhtml;
  * @link http://sessiondigital.com
  */
 use Magento\Backend\Block\Template;
+use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig\Reader;
 use Magento\Framework\App\ProductMetadataInterface;
@@ -34,6 +35,7 @@ use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\App\State;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Json\Helper\Data as JsonHelper;
 
 class HelperBar extends Template
 {
@@ -61,6 +63,16 @@ class HelperBar extends Template
     protected $storeManager;
 
     /**
+     * @var TypeListInterface
+     */
+    protected $cacheTypeList;
+
+    /**
+     * @var JsonHelper
+     */
+    protected $jsonHelper;
+
+    /**
      * HelperBar constructor.
      *
      * @param Reader $reader
@@ -76,6 +88,8 @@ class HelperBar extends Template
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager,
         Template\Context $context,
+        TypeListInterface $cacheTypeList,
+        JsonHelper $jsonHelper,
         array $data = []
     )
     {
@@ -83,6 +97,8 @@ class HelperBar extends Template
         $this->productMetadata = $productMetadata;
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
+        $this->cacheTypeList = $cacheTypeList;
+        $this->jsonHelper = $jsonHelper;
         parent::__construct($context, $data);
     }
 
@@ -119,5 +135,25 @@ class HelperBar extends Template
             $this->productMetadata->getName(),
             $this->productMetadata->getEdition(),
             $this->productMetadata->getVersion());
+    }
+
+    /**
+     * Return the url to the mass refresh ajax controller
+     */
+    public function getMassRefreshUrl()
+    {
+        return $this->getUrl('helperbar/ajax_cache/massRefresh');
+    }
+
+    /**
+     * Return the list of Cache Type as JSON
+     */
+    public function getCacheTypesJson()
+    {
+        $cacheTypes = [];
+        foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {
+            $cacheTypes[$id] = $cacheType->getCacheType();
+        }
+        return $this->jsonHelper->jsonEncode($cacheTypes);
     }
 }
