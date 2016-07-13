@@ -3,7 +3,7 @@
  * @see \MX\HelperBar\Block\Adminhtml\HelperBar
  */
 ?>
-<?php if ($block->isEnabled()): ?>
+<?php if ($block->isEnabled() && $block->isAllowed()): ?>
         <div id="helper-bar" class="helper-bar helper-bar-<?= $block->getMode(); ?>">
         <span class="mage-mode column mage-mode-<?= $block->getMode(); ?>"></span>
 
