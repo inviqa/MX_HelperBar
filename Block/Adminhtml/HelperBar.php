@@ -137,6 +137,16 @@ class HelperBar extends Template
             $this->productMetadata->getVersion());
     }
 
+    public function getCommands()
+    {
+        return $this->jsonHelper->jsonEncode([
+            "Clear Cache" => [
+                "url" => $this->getMassRefreshUrl(),
+                "options" => $this->getClearCacheOptions()
+            ]
+        ]);
+    }
+
     /**
      * Return the url to the mass refresh ajax controller
      */
@@ -146,14 +156,15 @@ class HelperBar extends Template
     }
 
     /**
-     * Return the list of Cache Type as JSON
+     * Return the list of Cache Type
      */
-    public function getCacheTypesJson()
+    public function getClearCacheOptions()
     {
-        $cacheTypes = [];
+        $cacheTypes["all"] = "All";
         foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {
             $cacheTypes[$id] = $cacheType->getCacheType();
         }
-        return $this->jsonHelper->jsonEncode($cacheTypes);
+
+        return $cacheTypes;
     }
 }

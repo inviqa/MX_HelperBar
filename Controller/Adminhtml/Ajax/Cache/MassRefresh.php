@@ -20,17 +20,17 @@ class MassRefresh extends Action
     /**
      * @var TypeListInterface
      */
-    protected $_cacheTypeList;
+    protected $cacheTypeList;
 
     /**
      * @var StateInterface
      */
-    protected $_cacheState;
+    protected $cacheState;
 
     /**
      * @var Pool
      */
-    protected $_cacheFrontendPool;
+    protected $cacheFrontendPool;
 
     /**
      * @var JsonFactory
@@ -53,9 +53,9 @@ class MassRefresh extends Action
         JsonFactory $resultJsonFactory
     ) {
         parent::__construct($context);
-        $this->_cacheTypeList = $cacheTypeList;
-        $this->_cacheState = $cacheState;
-        $this->_cacheFrontendPool = $cacheFrontendPool;
+        $this->cacheTypeList = $cacheTypeList;
+        $this->cacheState = $cacheState;
+        $this->cacheFrontendPool = $cacheFrontendPool;
         $this->resultJsonFactory = $resultJsonFactory;
     }
 
@@ -68,14 +68,17 @@ class MassRefresh extends Action
     {
         $response = "";
         try {
-            $types = $this->getRequest()->getParam('types');
+            $labels = $this->getRequest()->getParam('labels');
             $updatedTypes = 0;
-            if (!is_array($types)) {
-                $types = [];
+            if (!is_array($labels)) {
+                $labels = [];
             }
-            $this->_validateTypes($types);
+
+            $labels = array_map("trim", $labels);
+            $types = $this->getTypes($labels);
+
             foreach ($types as $type) {
-                $this->_cacheTypeList->cleanType($type);
+                $this->cacheTypeList->cleanType($type);
                 $updatedTypes++;
             }
             if ($updatedTypes > 0) {
@@ -94,22 +97,25 @@ class MassRefresh extends Action
         return $resultJson->setData($response);
     }
 
-    /**
-     * Check whether specified cache types exist
-     *
-     * @param array $types
-     * @return void
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    private function _validateTypes(array $types)
+
+    private function getTypes(array $labels)
     {
-        if (empty($types)) {
-            return;
+        $cacheTypes = [];
+        foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {
+            $cacheTypes[$cacheType->getCacheType()] = $id;
         }
-        $allTypes = array_keys($this->_cacheTypeList->getTypes());
-        $invalidTypes = array_diff($types, $allTypes);
-        if (count($invalidTypes) > 0) {
-            throw new LocalizedException(__('Specified cache type(s) don\'t exist: %1', join(', ', $invalidTypes)));
+
+        if (array_search("All", $labels) !== false) {
+            return array_values($cacheTypes);
         }
+
+        $types = [];
+        foreach ($labels as $label) {
+            if(array_key_exists($label, $cacheTypes)) {
+                $types[] = $cacheTypes[$label];
+            }
+        }
+
+        return $types;
     }
 }

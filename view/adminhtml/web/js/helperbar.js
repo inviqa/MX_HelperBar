@@ -13,22 +13,22 @@ define([
             //command text settings
             commandArgumentSeparator: "for:",
 
-            //command clear cache settings
-            commandPrefix: "Clear Cache",
-            massRefreshUrl: "",
-            cacheTypes: "",
-            cacheTypeLabelAll: "All"
+            commands: []
         },
 
         initAutocomplete: function(commandSearch) {
-            var cacheTypes = this.options.cacheTypes;
-            var preCommandString = this.options.commandPrefix + " " + this.options.commandArgumentSeparator + " ";
-            var searchSource = [preCommandString + this.options.cacheTypeLabelAll];
-            for(var key in cacheTypes) {
-                if (cacheTypes.hasOwnProperty(key)) {
-                    searchSource.push(preCommandString + cacheTypes[key]);
+            var searchSource = [];
+
+            for (var prefix in this.options.commands) {
+                if(!this.options.commands.hasOwnProperty(prefix)) continue;
+                var beforeArguments = prefix + " " + this.options.commandArgumentSeparator + " ";
+                var command = this.options.commands[prefix];
+                for (var key in command.options) {
+                    if (!command.options.hasOwnProperty(key)) continue;
+                    searchSource.push(beforeArguments + command.options[key]);
                 }
             }
+
             commandSearch.autocomplete({
                 source: searchSource
             });
@@ -41,7 +41,6 @@ define([
 
             var commandSearch = this.element.find(this.options.commandSearchSelector);
             var closeButton = this.element.find(this.options.closeSelector);
-
             this.initAutocomplete(commandSearch);
 
             commandSearch.on(
@@ -73,17 +72,21 @@ define([
             var me = e.data.scope;
             if(e.keyCode == me.ENTER) {
 
+                var selectedOption = e.srcElement.value;
+                var ajaxController = me.getAjaxController(selectedOption);
+
+                if (ajaxController === false) return false;
+
                 $.ajax({
-                    url: me.options.massRefreshUrl,
                     dataType: 'json',
-                    data: {
-                        types: 'config,layout,block_html,collections,reflection,db_ddl,eav,customer_notification,target_rule,full_page,config_integration,config_integration_api,translate,config_webservice',
-                    }
+                    url: ajaxController.url,
+                    data: ajaxController.data
                 }).done($.proxy(function(data) {
-                    if (data.error) {
-                        console.log("ERROR");
+                    if (data.error || data.success == false) {
+                        console.log("Something wrong happened");
+                        console.log(data.message);
                     } else {
-                        console.log("OK");
+                        alert(data.message);
                     }
                 }, this));
             }
@@ -122,6 +125,25 @@ define([
 
         toggleHelpBar: function() {
             this.element.toggle();
+        },
+
+        getAjaxController: function(selectedOption) {
+            var splitCommandArgument = selectedOption.split(this.options.commandArgumentSeparator).map(function(ele){return ele.trim()});
+            var command = splitCommandArgument[0];
+            var argument = splitCommandArgument[1];
+
+            if (command === undefined || argument === undefined) return false;
+
+            var url = this.options.commands[command].url;
+
+            return {
+                url: url,
+                data:
+                {
+                    labels: argument,
+                    massaction_prepare_key: 'labels'
+                }
+            };
         }
     });
 

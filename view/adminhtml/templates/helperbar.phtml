@@ -4,7 +4,7 @@
  */
 ?>
 <?php if ($block->isEnabled()): ?>
-    <div id="helper-bar" class="helper-bar helper-bar-<?= $block->getMode(); ?>">
+        <div id="helper-bar" class="helper-bar helper-bar-<?= $block->getMode(); ?>">
         <span class="mage-mode column mage-mode-<?= $block->getMode(); ?>"></span>
 
         <span class="env column white">
@@ -18,14 +18,12 @@
         <span id="helper-bar-close" class="helper-bar-close">X</span>
         <script type="text/x-magento-init">
             {
-                "#helper-bar":
-                {
+                "#helper-bar": {
                     "MX_HelperBar/js/helperbar":
                     {
                         "closeSelector": "#helper-bar-close",
                         "commandSearchSelector": "#helper-bar-command-search",
-                        "massRefreshUrl": "<?= /* @escapeNotVerified */ $block->getMassRefreshUrl(); ?>",
-                        "cacheTypes": <?= /* @escapeNotVerified */ $block->getCacheTypesJson(); ?>
+                        "commands": <?= /* @escapeNotVerified */ $block->getCommands(); ?>
                     }
                 }
             }
