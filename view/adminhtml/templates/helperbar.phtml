@@ -23,7 +23,7 @@
                     {
                         "closeSelector": "#helper-bar-close",
                         "commandSearchSelector": "#helper-bar-command-search",
-                        "commands": <?= /* @escapeNotVerified */ $block->getCommands(); ?>
+                        "commands": <?= /* @escapeNotVerified */ $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getCommands()); ?>
                     }
                 }
             }

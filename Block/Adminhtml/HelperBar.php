@@ -94,10 +94,10 @@ class HelperBar extends Template
         ProductMetadataInterface $productMetadata,
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager,
-        Template\Context $context,
         TypeListInterface $cacheTypeList,
         JsonHelper $jsonHelper,
         AuthorizationInterface $authorization,
+        Template\Context $context,
         array $data = []
     )
     {
@@ -156,18 +156,18 @@ class HelperBar extends Template
 
     public function getCommands()
     {
-        return $this->jsonHelper->jsonEncode([
+        return [
             "Clear Cache" => [
                 "url" => $this->getMassRefreshUrl(),
                 "options" => $this->getClearCacheOptions()
             ]
-        ]);
+        ];
     }
 
     /**
      * Return the url to the mass refresh ajax controller
      */
-    public function getMassRefreshUrl()
+    private function getMassRefreshUrl()
     {
         return $this->getUrl('helperbar/ajax_cache/massRefresh');
     }
@@ -175,7 +175,7 @@ class HelperBar extends Template
     /**
      * Return the list of Cache Type
      */
-    public function getClearCacheOptions()
+    private function getClearCacheOptions()
     {
         $cacheTypes["all"] = "All";
         foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {

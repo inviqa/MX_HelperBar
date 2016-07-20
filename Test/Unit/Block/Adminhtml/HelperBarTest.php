@@ -17,9 +17,12 @@
  */
 namespace MX\HelperBar\Test\Unit\Block\Adminhtml;
 
+use \Magento\Store\Model\ScopeInterface;
 use \MX\HelperBar\Block\Adminhtml\HelperBar;
-use Magento\Framework\Config\File\ConfigFilePool;
-use Magento\Framework\App\State;
+use \Magento\Framework\Config\File\ConfigFilePool;
+use \Magento\Framework\App\State;
+
+use \Magento\Store\Api\Data\StoreInterface;
 
 class HelperBarTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,56 +30,84 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
     protected $helperBar;
 
     /** @var \Magento\Framework\App\DeploymentConfig\Reader|\PHPUnit_Framework_MockObject_MockObject */
-    protected $readerMock;
+    protected $reader;
 
     /** @var \Magento\Framework\App\ProductMetadataInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $productMetadataInterfaceMock;
 
     /** @var \Magento\Backend\Block\Template\Context|\PHPUnit_Framework_MockObject_MockObject */
-    protected $contextMock;
+    protected $context;
+
+    /** @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $scopeConfig;
+
+    /** @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $storeManager;
+
+    /** @var \Magento\Framework\App\Cache\TypeListInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $cacheTypeList;
+
+    /** @var \Magento\Framework\Json\Helper\Data|\PHPUnit_Framework_MockObject_MockObject */
+    protected $jsonHelper;
+
+    /** @var \Magento\Framework\AuthorizationInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $authorization;
+
+    /** @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $urlBuilder;
 
     protected function setUp()
     {
-        $this->readerMock = $this->getActualMock('\Magento\Framework\App\DeploymentConfig\Reader');
-        $this->productMetadataInterfaceMock = $this->getActualMock('\Magento\Framework\App\ProductMetadataInterface');
-        $this->contextMock = $this->getActualMock('\Magento\Backend\Block\Template\Context');
+        $this->reader = $this->getMockBuilder('\Magento\Framework\App\DeploymentConfig\Reader')->disableOriginalConstructor()->getMock();
+        $this->productMetadataInterfaceMock = $this->getMockBuilder('\Magento\Framework\App\ProductMetadataInterface')->disableOriginalConstructor()->getMock();
+        $this->context = $this->getMockBuilder('\Magento\Backend\Block\Template\Context')->disableOriginalConstructor()->getMock();
+        $this->scopeConfig = $this->getMockBuilder('\Magento\Framework\App\Config\ScopeConfigInterface')->disableOriginalConstructor()->getMock();
+        $this->storeManager = $this->getMockBuilder('\Magento\Store\Model\StoreManagerInterface')->disableOriginalConstructor()->getMock();
+        $this->cacheTypeList = $this->getMockBuilder('\Magento\Framework\App\Cache\TypeListInterface')->disableOriginalConstructor()->getMock();
+        $this->jsonHelper = $this->getMockBuilder('\Magento\Framework\Json\Helper\Data')->disableOriginalConstructor()->getMock();
+        $this->authorization = $this->getMockBuilder('\Magento\Framework\AuthorizationInterface')->disableOriginalConstructor()->getMock();
+        $this->urlBuilder = $this->getMockBuilder('Magento\Framework\Url')->disableOriginalConstructor()->getMock();
+
+        $this->context->expects($this->any())
+            ->method('getUrlBuilder')
+            ->will($this->returnValue($this->urlBuilder));
 
         $this->helperBar = new HelperBar(
-            $this->readerMock,
+            $this->reader,
             $this->productMetadataInterfaceMock,
-            $this->contextMock
-        );
-    }
-
-    private function getActualMock($originalClassName)
-    {
-        return $this->getMock(
-            $originalClassName,
-            [],
-            [],
-            '',
-            false
+            $this->scopeConfig,
+            $this->storeManager,
+            $this->cacheTypeList,
+            $this->jsonHelper,
+            $this->authorization,
+            $this->context
         );
     }
 
     /**
-     * @dataProvider displayValidation
+     * @dataProvider isEnabledDataProvider
      */
-    public function testDisplayValidation($isEnabled, $appEnvSettings)
+    public function testIsEnabled($isEnabled, $appEnvSettings)
     {
-        $this->readerMock->expects($this->once())
-            ->method('load')
-            ->with(ConfigFilePool::APP_ENV)
+        $mockStore = $this->getMockBuilder('\Magento\Store\Api\Data\StoreInterface')->disableOriginalConstructor()->getMock();
+        $this->storeManager->expects($this->once())
+            ->method('getStore')
+            ->will($this->returnValue($mockStore));
+
+        $this->scopeConfig->expects($this->once())
+            ->method('getValue')
+            ->with(HelperBar::CONFIG_DATA_PATH, ScopeInterface::SCOPE_STORE, null)
             ->will($this->returnValue($appEnvSettings));
+
         $this->assertSame($isEnabled, $this->helperBar->isEnabled());
     }
 
-    public function displayValidation()
+    public function isEnabledDataProvider()
     {
         return [
-            "HELPER_BAR setting missing" => [false, []],
-            "HELPER_BAR setting set to true" => [true, [HelperBar::ENV_PARAM => true]],
-            "HELPER_BAR setting set to false" => [false, [HelperBar::ENV_PARAM => false]]
+            'Setting missing' => [false, null],
+            'Setting disabled' => [false, '0'],
+            'Setting enabled' => [true, '1']
         ];
     }
 
@@ -85,7 +116,7 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetMode($mode, $environment)
     {
-        $this->readerMock->expects($this->once())
+        $this->reader->expects($this->once())
             ->method('load')
             ->with(ConfigFilePool::APP_ENV)
             ->will($this->returnValue($environment));
@@ -114,5 +145,65 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
             ->method('getVersion')
             ->will($this->returnValue('3.0.0'));
         $this->assertSame('Magento Enterprise 3.0.0', $this->helperBar->getProductMetadata());
+    }
+
+    /**
+     * @dataProvider isAllowed
+     */
+    public function testIsAllowed($expected, $isAllowedResource)
+    {
+        $this->authorization->expects($this->once())
+            ->method('isAllowed')
+            ->with(HelperBar::ADMIN_RESOURCE)
+            ->will($this->returnValue($isAllowedResource));
+        $this->assertSame($expected, $this->helperBar->isAllowed());
+    }
+
+    public function isAllowed()
+    {
+        return [
+            "User is not allowed resource" => [false, false],
+            "User is allowed resource" => [true, true],
+        ];
+    }
+
+    public function testGetCommands()
+    {
+        $commandUrl = 'clear-cache-generated-url';
+        $cacheTypes = [
+            'type-one' => $this->getType('Type One'),
+            'type-two' => $this->getType('Type Two'),
+            'type-three' => $this->getType('Type Three')
+        ];
+
+        $this->urlBuilder->expects($this->any())
+            ->method('getUrl')
+            ->will($this->returnValue($commandUrl));
+
+        $this->cacheTypeList->expects($this->any())
+            ->method('getTypes')
+            ->will($this->returnValue($cacheTypes));
+
+        $output = $this->helperBar->getCommands();
+
+        $this->assertSame([
+            "Clear Cache" => [
+                "url" => $commandUrl,
+                "options" => [
+                    'all' => 'All',
+                    'type-one' => 'Type One',
+                    'type-two' => 'Type Two',
+                    'type-three' => 'Type Three'
+                ]
+            ]
+        ], $output);
+    }
+
+    private function getType($label) {
+        return new \Magento\Framework\DataObject(
+            [
+                'cache_type' => $label
+            ]
+        );
     }
 }
