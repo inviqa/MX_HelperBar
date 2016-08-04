@@ -36,8 +36,7 @@ use Magento\Framework\App\State;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
-
-use MX\HelperBar\Model\Commands\ClearCache as ClearCache;
+use MX\HelperBar\Model\CommandRepository;
 
 class HelperBar extends Template
 {
@@ -76,9 +75,9 @@ class HelperBar extends Template
     protected $authorization;
 
     /**
-     * @var ClearCache
+     * @var CommandRepository
      */
-    protected $clearCache;
+    protected $commandRepository;
 
     /**
      * HelperBar constructor.
@@ -87,6 +86,9 @@ class HelperBar extends Template
      * @param ProductMetadataInterface $productMetadata
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
+     * @param JsonHelper $jsonHelper
+     * @param AuthorizationInterface $authorization
+     * @param CommandRepository $commandRepository
      * @param Template\Context $context
      * @param array $data
      */
@@ -97,7 +99,8 @@ class HelperBar extends Template
         StoreManagerInterface $storeManager,
         JsonHelper $jsonHelper,
         AuthorizationInterface $authorization,
-        ClearCache $clearCache,
+        CommandRepository $commandRepository,
+
         Template\Context $context,
         array $data = []
     )
@@ -108,7 +111,7 @@ class HelperBar extends Template
         $this->storeManager = $storeManager;
         $this->jsonHelper = $jsonHelper;
         $this->authorization = $authorization;
-        $this->clearCache = $clearCache;
+        $this->commandRepository = $commandRepository;
         parent::__construct($context, $data);
     }
 
@@ -157,12 +160,14 @@ class HelperBar extends Template
 
     public function getCommands()
     {
-        return [
-            "Clear Cache" => [
-                "url" => $this->clearCache->getHandlerUrl(),
-                "options" => $this->clearCache->getOptions()
-            ]
-        ];
+        $commands = [];
+        foreach ($this->commandRepository->getAllCommands() as $name => $command) {
+            $commands[$name] = [
+                "url" => $command->getHandlerUrl(),
+                "options" => $command->getOptions()
+            ];
+        }
+        return $commands;
     }
 
 }

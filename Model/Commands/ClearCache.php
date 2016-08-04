@@ -28,6 +28,11 @@ class ClearCache implements CommandInterface
         $this->urlBuilder = $urlInterface;
     }
 
+    public function getName()
+    {
+        return 'Clear Cache';
+    }
+
     /**
      * Return the url to the mass refresh ajax controller
      */

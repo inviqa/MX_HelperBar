@@ -4,6 +4,13 @@ namespace MX\HelperBar\Api;
 interface CommandInterface
 {
     /**
+     * Return the name for this command
+     *
+     * @return string
+     */
+    public function getName();
+
+    /**
      * Gives the url that will handle this command
      *
      * @return string
