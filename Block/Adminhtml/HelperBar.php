@@ -27,28 +27,87 @@ namespace MX\HelperBar\Block\Adminhtml;
  * @link http://sessiondigital.com
  */
 use Magento\Backend\Block\Template;
+use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig\Reader;
+use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\App\State;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Json\Helper\Data as JsonHelper;
 
 class HelperBar extends Template
 {
-    /** @var \Magento\Framework\App\DeploymentConfig\Reader $reader */
+    const ENV_PARAM = 'HELPER_BAR';
+    const CONFIG_DATA_PATH = "dev/debug/helper_bar_admin";
+    const ADMIN_RESOURCE = 'Magento_Backend::admin';
+
+    /**
+     * @var Reader $reader
+     */
     protected $reader;
+
+    /**
+     * @var ProductMetadataInterface
+     */
+    protected $productMetadata;
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
+     * @var TypeListInterface
+     */
+    protected $cacheTypeList;
+
+    /**
+     * @var JsonHelper
+     */
+    protected $jsonHelper;
+
+    /**
+     * @var AuthorizationInterface
+     */
+    protected $authorization;
 
     /**
      * HelperBar constructor.
      *
      * @param Reader $reader
+     * @param ProductMetadataInterface $productMetadata
+     * @param ScopeConfigInterface $scopeConfig
+     * @param StoreManagerInterface $storeManager
      * @param Template\Context $context
      * @param array $data
      */
     public function __construct(
         Reader $reader,
+        ProductMetadataInterface $productMetadata,
+        ScopeConfigInterface $scopeConfig,
+        StoreManagerInterface $storeManager,
+        TypeListInterface $cacheTypeList,
+        JsonHelper $jsonHelper,
+        AuthorizationInterface $authorization,
         Template\Context $context,
         array $data = []
-    ) {
+    )
+    {
         $this->reader = $reader;
+        $this->productMetadata = $productMetadata;
+        $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
+        $this->cacheTypeList = $cacheTypeList;
+        $this->jsonHelper = $jsonHelper;
+        $this->authorization = $authorization;
         parent::__construct($context, $data);
     }
 
@@ -59,21 +118,16 @@ class HelperBar extends Template
      */
     public function isEnabled()
     {
-        $env = $this->reader->load(ConfigFilePool::APP_ENV);
-
-        return isset($env['HELPER_BAR']);
+        $storeCode = $this->storeManager->getStore()->getCode();
+        return $this->scopeConfig->getValue(self::CONFIG_DATA_PATH, ScopeInterface::SCOPE_STORE, $storeCode) === '1';
     }
 
     /**
-     * Return the current environment that Magento 2 is running in
-     *
-     * @return string | null
+     * @return bool
      */
-    public function getEnv()
+    public function isAllowed()
     {
-        $env = $this->reader->load(ConfigFilePool::APP_ENV);
-
-        return isset($env['HELPER_BAR']) ? $env['HELPER_BAR'] : null;
+        return $this->authorization->isAllowed(self::ADMIN_RESOURCE);
     }
 
     /**
@@ -84,7 +138,50 @@ class HelperBar extends Template
     public function getMode()
     {
         $env = $this->reader->load(ConfigFilePool::APP_ENV);
-
         return isset($env[State::PARAM_MODE]) ? $env[State::PARAM_MODE] : null;
+    }
+
+    /**
+     * Return the framework name, edition and the version
+     *
+     * @return string
+     */
+    public function getProductMetadata()
+    {
+        return sprintf("%s %s %s",
+            $this->productMetadata->getName(),
+            $this->productMetadata->getEdition(),
+            $this->productMetadata->getVersion());
+    }
+
+    public function getCommands()
+    {
+        return [
+            "Clear Cache" => [
+                "url" => $this->getMassRefreshUrl(),
+                "options" => $this->getClearCacheOptions()
+            ]
+        ];
+    }
+
+    /**
+     * Return the url to the mass refresh ajax controller
+     */
+    private function getMassRefreshUrl()
+    {
+        return $this->getUrl('helperbar/ajax_cache/massRefresh');
+    }
+
+    /**
+     * Return the list of Cache Type
+     */
+    private function getClearCacheOptions()
+    {
+        $cacheTypes["all"] = "All";
+        foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {
+            $cacheTypes[$id] = $cacheType->getCacheType();
+        }
+
+        return $cacheTypes;
     }
 }

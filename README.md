@@ -23,5 +23,5 @@ Then add the module to the require section to ensure it gets loaded.
    }
 ```
 
-For each of the instances that you want to be displayed you need to modify `app/etc/env.php` and set the variable `HELPER_BAR` to be
-what value you want to be shown in the admin for each of the pipeline instances.
+Then navigate to Stores -> Configuration -> Advanced -> Developer -> Debug
+and select "Enabled Helper Bar for Admin": "Yes""
