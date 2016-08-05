@@ -1,20 +1,4 @@
 <?php
-/**
- * NOTICE OF LICENSE
- *
- * This source file is subject to the license
- * that is bundled with this package in the file LICENSE.
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to support@inviqa.com so we can send you a copy immediately.
- *
- * @category MX
- * @package MX\HelperBar
- * @author Alessandro Zucca <azucca@inviqa.com>
- * @copyright 2016 Inviqa
- * @license Inviqa
- * @link http://www.inviqa.com
- */
 namespace MX\HelperBar\Test\Unit\Block\Adminhtml;
 
 use \Magento\Store\Model\ScopeInterface;
@@ -44,8 +28,8 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
     /** @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $storeManager;
 
-    /** @var \Magento\Framework\App\Cache\TypeListInterface|\PHPUnit_Framework_MockObject_MockObject */
-    protected $cacheTypeList;
+    /** @var \MX\HelperBar\Api\CommandRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $commandRepository;
 
     /** @var \Magento\Framework\Json\Helper\Data|\PHPUnit_Framework_MockObject_MockObject */
     protected $jsonHelper;
@@ -63,7 +47,7 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
         $this->context = $this->getMockBuilder('\Magento\Backend\Block\Template\Context')->disableOriginalConstructor()->getMock();
         $this->scopeConfig = $this->getMockBuilder('\Magento\Framework\App\Config\ScopeConfigInterface')->disableOriginalConstructor()->getMock();
         $this->storeManager = $this->getMockBuilder('\Magento\Store\Model\StoreManagerInterface')->disableOriginalConstructor()->getMock();
-        $this->cacheTypeList = $this->getMockBuilder('\Magento\Framework\App\Cache\TypeListInterface')->disableOriginalConstructor()->getMock();
+        $this->commandRepository = $this->getMockBuilder('\MX\HelperBar\Api\CommandRepositoryInterface')->disableOriginalConstructor()->getMock();
         $this->jsonHelper = $this->getMockBuilder('\Magento\Framework\Json\Helper\Data')->disableOriginalConstructor()->getMock();
         $this->authorization = $this->getMockBuilder('\Magento\Framework\AuthorizationInterface')->disableOriginalConstructor()->getMock();
         $this->urlBuilder = $this->getMockBuilder('Magento\Framework\Url')->disableOriginalConstructor()->getMock();
@@ -77,9 +61,9 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
             $this->productMetadataInterfaceMock,
             $this->scopeConfig,
             $this->storeManager,
-            $this->cacheTypeList,
             $this->jsonHelper,
             $this->authorization,
+            $this->commandRepository,
             $this->context
         );
     }
@@ -165,45 +149,5 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
             "User is not allowed resource" => [false, false],
             "User is allowed resource" => [true, true],
         ];
-    }
-
-    public function testGetCommands()
-    {
-        $commandUrl = 'clear-cache-generated-url';
-        $cacheTypes = [
-            'type-one' => $this->getType('Type One'),
-            'type-two' => $this->getType('Type Two'),
-            'type-three' => $this->getType('Type Three')
-        ];
-
-        $this->urlBuilder->expects($this->any())
-            ->method('getUrl')
-            ->will($this->returnValue($commandUrl));
-
-        $this->cacheTypeList->expects($this->any())
-            ->method('getTypes')
-            ->will($this->returnValue($cacheTypes));
-
-        $output = $this->helperBar->getCommands();
-
-        $this->assertSame([
-            "Clear Cache" => [
-                "url" => $commandUrl,
-                "options" => [
-                    'all' => 'All',
-                    'type-one' => 'Type One',
-                    'type-two' => 'Type Two',
-                    'type-three' => 'Type Three'
-                ]
-            ]
-        ], $output);
-    }
-
-    private function getType($label) {
-        return new \Magento\Framework\DataObject(
-            [
-                'cache_type' => $label
-            ]
-        );
     }
 }
