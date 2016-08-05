@@ -1,7 +1,8 @@
 define([
     "jquery",
+    'Magento_Ui/js/modal/alert',
     "jquery/ui"
-], function($) {
+], function($, alert) {
     "use strict";
 
     var _this;
@@ -59,7 +60,7 @@ define([
                 },
                 select: function(e, ui) {
                      var selectedOption = ui.item.value,
-                     ajaxController = _this.getAjaxController(selectedOption);
+                         ajaxController = _this.getAjaxController(selectedOption);
 
                      if (ajaxController === false) return false;
 
@@ -72,7 +73,10 @@ define([
                              console.log("Something wrong happened");
                              console.log(data.message);
                          } else {
-                            alert(data.message);
+                             alert({
+                                 title: 'Success',
+                                 content: data.message
+                             });
                          }
                      }, this));
                 }
