@@ -11,7 +11,9 @@
     width: 10px;
     color: white;
     float: right;
-    cursor: hand;
+    cursor: pointer;
+    margin: 8px 8px 0 0;
+    display: block;
 }
 
 .helper-bar > .column {
@@ -50,14 +52,12 @@
 }
 
 .helper-bar > .env {
-    font-size: 24px;
+    font-size: 22px;
     padding-top: 10px;
 }
 
-.helper-bar > .env > span {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+.helper-bar .env.column.white {
+    padding-top: 14px;
 }
 
 .helper-bar > .white {
@@ -66,4 +66,105 @@
 
 #helper-bar-command-search {
     width: 500px;
+}
+
+.ui-autocomplete {
+    max-width: 500px !important;
+}
+
+.ui-helper-hidden-accessible {
+    font-size: 13px;
+    color: white;
+    padding: 0 10px;
+    display: inline-block;
+}
+
+
+.ui-autocomplete {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    float: left;
+    display: none;
+    min-width: 160px;
+    padding: 4px 0;
+    margin: 0 0 10px 25px;
+    list-style: none;
+    background-color: #ffffff;
+    border-color: #ccc;
+    border-color: rgba(0, 0, 0, 0.2);
+    border-style: solid;
+    border-width: 1px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+    *border-right-width: 2px;
+    *border-bottom-width: 2px;
+}
+
+.ui-menu-item > a.ui-corner-all {
+    display: block;
+    padding: 3px 15px;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    color: #555555;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.ui-menu .ui-menu-item {
+    position: relative;
+    margin: 0;
+    padding: 3px 1em 3px .4em;
+    cursor: pointer;
+    list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+}
+
+.ui-menu .ui-menu-item a {
+    border:1px solid transparent;
+}
+
+.ui-state-hover, .ui-state-active {
+    color: #ffffff;
+    text-decoration: none;
+    background-color: #0088cc;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    background-image: none;
+}
+
+.ui-menu .ui-menu-item a.ui-state-focus {
+    border: 1px solid #999999;
+}
+
+.overflow-y-hidden {
+    overflow-y: hidden;
+}
+
+.ui-state-focus {
+    border: 1px solid #999999;
+    background: #dadada;
+    font-weight: normal;
+    color: #212121;
+}
+
+.ui-state-hover a,
+.ui-state-hover a:hover,
+.ui-state-hover a:link,
+.ui-state-hover a:visited,
+.ui-state-focus a,
+.ui-state-focus a:hover,
+.ui-state-focus a:link,
+.ui-state-focus a:visited {
+    color: #212121;
+    text-decoration: none;
 }
