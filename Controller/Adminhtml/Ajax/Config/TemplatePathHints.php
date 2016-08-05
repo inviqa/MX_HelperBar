@@ -50,7 +50,7 @@ class TemplatePathHints extends Action
             foreach ($configurationOptions as $path => $value) {
                 $this->config->saveConfig($path, $value, 'default', 0);
             }
-            $response = ['success' => false, 'message' => __('The template path hints settings have been updates successfully.')];
+            $response = ['success' => true, 'message' => __('The template path hints settings have been updates successfully.')];
         } catch (\Exception $e) {
             $response = ['success' => false, 'message' => __('An error occurred while updating the template path hints settings.')];
         }
