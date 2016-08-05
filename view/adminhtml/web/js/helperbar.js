@@ -11,33 +11,31 @@ define([
             //selectors
             closeSelector: "",
             commandSearchSelector: "",
-
             //command text settings
             commandArgumentSeparator: "for:",
-
             commands: []
         },
-        CTRL: 17,
-        BACK_TICK: 192,
-        ENTER: 13,
-        combinationHideKeys: {},
 
         _create: function() {
-            this.setDefaultCombinationHideKeys();
             _this = this;
-
-            var commandSearch = $(this.options.commandSearchSelector),
-                closeButton = $(this.options.closeSelector);
-
-            this.initAutocomplete(commandSearch);
-
-            closeButton.on('click', this.onCloseIconClick);
-            $(document).on("keydown", this.onDocumentKeyDownCallback);
-            $(document).on("keyup", this.onDocumentKeyUpCallback);
+            //setup binds and initAutocomplete
+            this.setupBinds();
+            this.initAutocomplete($(this.options.commandSearchSelector));
         },
-
+        /**
+         * Setup Binds for clicks and keypress
+         */
+        setupBinds: function() {
+            $(this.options.closeSelector).on('click', this.toggleHelpBar);
+            $(document).on("keypress", this.onDocumentKeyCallback);
+        },
+        /**
+         * Initizalize autocomplete jQuery UI Widget
+         * @param commandSearch
+         */
         initAutocomplete: function(commandSearch) {
-            var searchSource = [];
+            var searchSource = [],
+                $bodyHtml = $('body, html');
 
             for (var prefix in this.options.commands) {
                 if(!this.options.commands.hasOwnProperty(prefix)) continue;
@@ -49,15 +47,15 @@ define([
                 }
             }
 
+            //auto complete initialize function
             commandSearch.autocomplete({
                 source: searchSource,
-                //appendTo: '#' + _this.element.attr('id'),
                 position: { my: "left bottom", at: "left top", collision: "flip" },
                 open: function() {
-                    $('body, html').addClass('overflow-y-hidden');
+                    $bodyHtml.addClass('overflow-y-hidden');
                 },
                 close: function() {
-                    $('body, html').removeClass('overflow-y-hidden');
+                    $bodyHtml.removeClass('overflow-y-hidden');
                 },
                 select: function(e, ui) {
                      var selectedOption = ui.item.value,
@@ -80,40 +78,28 @@ define([
                 }
             });
         },
-
-        onCloseIconClick: function() {
-            _this.toggleHelpBar();
-        },
-
-        onDocumentKeyDownCallback: function(e) {
-            _this.recordKeyPressed(e);
-        },
-
-        onDocumentKeyUpCallback: function(e) {
-            _this.recordKeyPressed(e);
-        },
-
-        setDefaultCombinationHideKeys: function() {
-            this.combinationHideKeys[this.CTRL] = false;
-            this.combinationHideKeys[this.BACK_TICK] = false;
-        },
-
-        recordKeyPressed: function(e) {
+        /**
+         * Handle keypress callback combinations
+         * @param e
+         * @returns {boolean}
+         */
+        onDocumentKeyCallback: function(e) {
             e = e || event;
-            if(_this.combinationHideKeys[e.keyCode] === undefined) return true;
-            _this.combinationHideKeys[e.keyCode] = e.type == 'keydown';
-
-            if(_this.combinationHideKeys[_this.CTRL] && _this.combinationHideKeys[_this.BACK_TICK]) {
+            if(e.ctrlKey && ( e.which === 96 )) {
                 _this.toggleHelpBar();
-                _this.setDefaultCombinationHideKeys();
             }
-            return false;
         },
-
+        /**
+         * Toggle toolbar
+         */
         toggleHelpBar: function() {
             _this.element.toggle();
         },
-
+        /**
+         * Return Ajax controller for selected option from list
+         * @param selectedOption
+         * @returns {*}
+         */
         getAjaxController: function(selectedOption) {
             var splitCommandArgument = selectedOption.split(this.options.commandArgumentSeparator).map(function(ele){return ele.trim()}),
                 command = splitCommandArgument[0],
