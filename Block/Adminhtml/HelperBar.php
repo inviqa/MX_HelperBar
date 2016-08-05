@@ -27,7 +27,6 @@ namespace MX\HelperBar\Block\Adminhtml;
  * @link http://sessiondigital.com
  */
 use Magento\Backend\Block\Template;
-use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig\Reader;
 use Magento\Framework\App\ProductMetadataInterface;
@@ -37,6 +36,7 @@ use Magento\Framework\App\State;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
+use MX\HelperBar\Model\CommandRepository;
 
 class HelperBar extends Template
 {
@@ -65,11 +65,6 @@ class HelperBar extends Template
     protected $storeManager;
 
     /**
-     * @var TypeListInterface
-     */
-    protected $cacheTypeList;
-
-    /**
      * @var JsonHelper
      */
     protected $jsonHelper;
@@ -80,12 +75,20 @@ class HelperBar extends Template
     protected $authorization;
 
     /**
+     * @var CommandRepository
+     */
+    protected $commandRepository;
+
+    /**
      * HelperBar constructor.
      *
      * @param Reader $reader
      * @param ProductMetadataInterface $productMetadata
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
+     * @param JsonHelper $jsonHelper
+     * @param AuthorizationInterface $authorization
+     * @param CommandRepository $commandRepository
      * @param Template\Context $context
      * @param array $data
      */
@@ -94,9 +97,10 @@ class HelperBar extends Template
         ProductMetadataInterface $productMetadata,
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager,
-        TypeListInterface $cacheTypeList,
         JsonHelper $jsonHelper,
         AuthorizationInterface $authorization,
+        CommandRepository $commandRepository,
+
         Template\Context $context,
         array $data = []
     )
@@ -105,9 +109,9 @@ class HelperBar extends Template
         $this->productMetadata = $productMetadata;
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
-        $this->cacheTypeList = $cacheTypeList;
         $this->jsonHelper = $jsonHelper;
         $this->authorization = $authorization;
+        $this->commandRepository = $commandRepository;
         parent::__construct($context, $data);
     }
 
@@ -156,32 +160,14 @@ class HelperBar extends Template
 
     public function getCommands()
     {
-        return [
-            "Clear Cache" => [
-                "url" => $this->getMassRefreshUrl(),
-                "options" => $this->getClearCacheOptions()
-            ]
-        ];
-    }
-
-    /**
-     * Return the url to the mass refresh ajax controller
-     */
-    private function getMassRefreshUrl()
-    {
-        return $this->getUrl('helperbar/ajax_cache/massRefresh');
-    }
-
-    /**
-     * Return the list of Cache Type
-     */
-    private function getClearCacheOptions()
-    {
-        $cacheTypes["all"] = "All";
-        foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {
-            $cacheTypes[$id] = $cacheType->getCacheType();
+        $commands = [];
+        foreach ($this->commandRepository->getAllCommands() as $name => $command) {
+            $commands[$name] = [
+                "url" => $command->getHandlerUrl(),
+                "options" => $command->getOptions()
+            ];
         }
-
-        return $cacheTypes;
+        return $commands;
     }
+
 }
