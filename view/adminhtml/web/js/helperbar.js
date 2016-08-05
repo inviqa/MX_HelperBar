@@ -4,6 +4,8 @@ define([
 ], function($) {
     "use strict";
 
+    var _this;
+
     $.widget('mx.helperbar', {
         options: {
             //selectors
@@ -14,6 +16,24 @@ define([
             commandArgumentSeparator: "for:",
 
             commands: []
+        },
+        CTRL: 17,
+        BACK_TICK: 192,
+        ENTER: 13,
+        combinationHideKeys: {},
+
+        _create: function() {
+            this.setDefaultCombinationHideKeys();
+            _this = this;
+
+            var commandSearch = $(this.options.commandSearchSelector),
+                closeButton = $(this.options.closeSelector);
+
+            this.initAutocomplete(commandSearch);
+
+            closeButton.on('click', this.onCloseIconClick);
+            $(document).on("keydown", this.onDocumentKeyDownCallback);
+            $(document).on("keyup", this.onDocumentKeyUpCallback);
         },
 
         initAutocomplete: function(commandSearch) {
@@ -30,80 +50,47 @@ define([
             }
 
             commandSearch.autocomplete({
-                source: searchSource
+                source: searchSource,
+                //appendTo: '#' + _this.element.attr('id'),
+                position: { my: "left bottom", at: "left top", collision: "flip" },
+                open: function() {
+                    $('body, html').addClass('overflow-y-hidden');
+                },
+                close: function() {
+                    $('body, html').removeClass('overflow-y-hidden');
+                },
+                select: function(e, ui) {
+                     var selectedOption = ui.item.value,
+                     ajaxController = _this.getAjaxController(selectedOption);
+
+                     if (ajaxController === false) return false;
+
+                     $.ajax({
+                         dataType: 'json',
+                         url: ajaxController.url,
+                         data: ajaxController.data
+                         }).done($.proxy(function(data) {
+                             if (data.error || data.success === false) {
+                             console.log("Something wrong happened");
+                             console.log(data.message);
+                         } else {
+                            alert(data.message);
+                         }
+                     }, this));
+                }
             });
         },
 
-        _create: function() {
-            this.setKeyAliases();
-            this.combinationHideKeys = {};
-            this.setDefaultCombinationHideKeys();
-
-            var commandSearch = this.element.find(this.options.commandSearchSelector);
-            var closeButton = this.element.find(this.options.closeSelector);
-            this.initAutocomplete(commandSearch);
-
-            commandSearch.on(
-                "keydown",
-                {scope: this},
-                this.onCommandSearchKeyDownCallback);
-
-            closeButton.on(
-                'click',
-                {scope: this},
-                this.onCloseIconClick);
-
-            $(document).on(
-                "keydown",
-                {scope: this},
-                this.onDocumentKeyDownCallback);
-
-            $(document).on(
-                "keyup",
-                {scope: this},
-                this.onDocumentKeyUpCallback);
-        },
-
-        onCloseIconClick: function(e) {
-            e.data.scope.toggleHelpBar();
-        },
-
-        onCommandSearchKeyDownCallback: function(e) {
-            var me = e.data.scope;
-            if(e.keyCode == me.ENTER) {
-
-                var selectedOption = e.srcElement.value;
-                var ajaxController = me.getAjaxController(selectedOption);
-
-                if (ajaxController === false) return false;
-
-                $.ajax({
-                    dataType: 'json',
-                    url: ajaxController.url,
-                    data: ajaxController.data
-                }).done($.proxy(function(data) {
-                    if (data.error || data.success == false) {
-                        console.log("Something wrong happened");
-                        console.log(data.message);
-                    } else {
-                        alert(data.message);
-                    }
-                }, this));
-            }
+        onCloseIconClick: function() {
+            _this.toggleHelpBar();
         },
 
         onDocumentKeyDownCallback: function(e) {
-            e.data.scope.recordKeyPressed(e, e.data.scope);
+            _this.recordKeyPressed(e);
         },
 
         onDocumentKeyUpCallback: function(e) {
-            e.data.scope.recordKeyPressed(e, e.data.scope);
-        },
-
-        setKeyAliases: function() {
-            this.CTRL = 17;
-            this.BACK_TICK = 192;
-            this.ENTER = 13;
+            _this.recordKeyPressed(e);
         },
 
         setDefaultCombinationHideKeys: function() {
@@ -111,26 +98,26 @@ define([
             this.combinationHideKeys[this.BACK_TICK] = false;
         },
 
-        recordKeyPressed: function(e, scope) {
+        recordKeyPressed: function(e) {
             e = e || event;
-            if(scope.combinationHideKeys[e.keyCode] === undefined) return true;
-            scope.combinationHideKeys[e.keyCode] = e.type == 'keydown';
+            if(_this.combinationHideKeys[e.keyCode] === undefined) return true;
+            _this.combinationHideKeys[e.keyCode] = e.type == 'keydown';
 
-            if(scope.combinationHideKeys[scope.CTRL] && scope.combinationHideKeys[scope.BACK_TICK]) {
-                scope.toggleHelpBar();
-                scope.setDefaultCombinationHideKeys();
+            if(_this.combinationHideKeys[_this.CTRL] && _this.combinationHideKeys[_this.BACK_TICK]) {
+                _this.toggleHelpBar();
+                _this.setDefaultCombinationHideKeys();
             }
             return false;
         },
 
         toggleHelpBar: function() {
-            this.element.toggle();
+            _this.element.toggle();
         },
 
         getAjaxController: function(selectedOption) {
-            var splitCommandArgument = selectedOption.split(this.options.commandArgumentSeparator).map(function(ele){return ele.trim()});
-            var command = splitCommandArgument[0];
-            var argument = splitCommandArgument[1];
+            var splitCommandArgument = selectedOption.split(this.options.commandArgumentSeparator).map(function(ele){return ele.trim()}),
+                command = splitCommandArgument[0],
+                argument = splitCommandArgument[1];
 
             if (command === undefined || argument === undefined) return false;
 
@@ -138,8 +125,7 @@ define([
 
             return {
                 url: url,
-                data:
-                {
+                data: {
                     labels: argument,
                     massaction_prepare_key: 'labels'
                 }
