@@ -8,6 +8,13 @@ use Magento\Framework\Controller\Result\JsonFactory;
 class TemplatePathHints extends Action
 {
     /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    const ADMIN_RESOURCE = 'Magento_Config::dev';
+    
+    /**
      * @var Config
      */
     private $config;
