@@ -4,8 +4,6 @@ The MX Helper bar is intended to be used to show store admins and operators what
 
 Also, it allows to search and perform a list of tasks, such as clearing cache types, without having to navigate away from the page.
 
-![Alt Text](https://github.com/inviqa/MX_HelperBar/raw/master/demo.gif)
-
 ## Installing
 
 Then add the module to the require section of the composer file:
@@ -24,6 +22,8 @@ this command will add:
 
 ## Enable
 
+![Alt Text](https://github.com/inviqa/MX_HelperBar/raw/master/install.gif)
+
 Once the module is added as dependency, run the magento setup module, clear the cache and make sure the module status is enabled.
 
 ```
@@ -40,6 +40,8 @@ and select _"Yes"_ for the option with label _"Enabled Helper Bar for Admin"_
 Then refresh the page and you will see the Helper Bar at the bottom of the screen. If you wish, you can temporary hide it by pressing the 'X' or using CTRL + ` as keyboard shortcut.
 
 ## Commands
+
+![Alt Text](https://github.com/inviqa/MX_HelperBar/raw/master/use.gif)
 
 What follows is a list of commands currently available, this will grow with time and get better with time (like wine does).
 
