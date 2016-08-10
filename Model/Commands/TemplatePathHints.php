@@ -21,6 +21,10 @@ class TemplatePathHints implements CommandInterface
         $this->urlBuilder = $urlInterface;
     }
 
+    public function getResourceId() {
+        return 'Magento_Config::dev';
+    }
+
     /**
      * Return the name for this command
      *

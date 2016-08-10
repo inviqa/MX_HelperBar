@@ -28,6 +28,10 @@ class ClearCache implements CommandInterface
         $this->urlBuilder = $urlInterface;
     }
 
+    public function getResourceId() {
+        return 'Magento_Backend::cache';
+    }
+
     public function getName()
     {
         return 'Clear Cache';
