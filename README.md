@@ -22,8 +22,6 @@ this command will add:
 
 ## Enable
 
-![Alt Text](https://github.com/inviqa/MX_HelperBar/raw/master/install.gif)
-
 Once the module is added as dependency, run the magento setup module, clear the cache and make sure the module status is enabled.
 
 ```
@@ -36,6 +34,8 @@ Now that the module is enabled, you need to make the Helper Bar visible.
 
 Navigate to: _Stores -> Configuration -> Advanced -> Developer -> Debug_
 and select _"Yes"_ for the option with label _"Enabled Helper Bar for Admin"_
+
+![Alt Text](https://github.com/inviqa/MX_HelperBar/raw/master/install.gif)
 
 Then refresh the page and you will see the Helper Bar at the bottom of the screen. If you wish, you can temporary hide it by pressing the 'X' or using CTRL + ` as keyboard shortcut.
 
