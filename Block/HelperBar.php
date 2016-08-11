@@ -125,7 +125,9 @@ class HelperBar extends Template
      */
     public function getEnvironmentName()
     {
-        return ucfirst($this->environmentName) . ' ' . __("Environment");
+        if ($this->environmentName !== '') {
+            return ucfirst($this->environmentName) . ' ' . __("Environment");
+        }
     }
 
     /**
