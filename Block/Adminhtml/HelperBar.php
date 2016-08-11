@@ -15,6 +15,8 @@ use MX\HelperBar\Api\CommandRepositoryInterface;
 
 class HelperBar extends Template
 {
+
+    const ENVIRONMENT_NAME = 'ENVIRONMENT_NAME';
     const ENV_PARAM = 'HELPER_BAR';
     const CONFIG_DATA_PATH = "dev/debug/helper_bar_admin";
     const ADMIN_RESOURCE = 'Magento_Backend::admin';
@@ -55,6 +57,11 @@ class HelperBar extends Template
     protected $commandRepository;
 
     /**
+     * @var string
+     */
+    private $environmentName;
+
+    /**
      * HelperBar constructor.
      *
      * @param Reader $reader
@@ -75,9 +82,9 @@ class HelperBar extends Template
         JsonHelper $jsonHelper,
         AuthorizationInterface $authorization,
         CommandRepositoryInterface $commandRepository,
-
         Template\Context $context,
-        array $data = []
+        array $data = [],
+        $environmentName
     )
     {
         $this->reader = $reader;
@@ -87,6 +94,7 @@ class HelperBar extends Template
         $this->jsonHelper = $jsonHelper;
         $this->authorization = $authorization;
         $this->commandRepository = $commandRepository;
+        $this->environmentName = $environmentName;
         parent::__construct($context, $data);
     }
 
@@ -118,6 +126,14 @@ class HelperBar extends Template
     {
         $env = $this->reader->load(ConfigFilePool::APP_ENV);
         return isset($env[State::PARAM_MODE]) ? $env[State::PARAM_MODE] : null;
+    }
+
+    /**
+     * Return the value of the
+     */
+    public function getEnvironmentName()
+    {
+        return ucfirst($this->environmentName) . ' ' . __("Environment");
     }
 
     /**
