@@ -79,6 +79,10 @@ define([
                              });
                          }
                      }, this));
+                },
+                messages: {
+                    noResults: '',
+                    results: function() {}
                 }
             });
         },

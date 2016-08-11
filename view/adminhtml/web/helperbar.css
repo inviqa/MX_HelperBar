@@ -21,6 +21,10 @@
     margin-left: 10px;
 }
 
+#product-metadata {
+    margin-left: 25%;
+}
+
 .mage-mode-developer {
     background-image:url('images/Flash-Left-Developer.jpg');
     width: 225px;
