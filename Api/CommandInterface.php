@@ -24,4 +24,9 @@ interface CommandInterface
      */
     public function getOptions();
 
+    /**
+     * Return the acl resource for the command
+     */
+    public function getResourceId();
+
 }
