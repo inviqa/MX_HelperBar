@@ -6,7 +6,7 @@
     <body>
         <referenceContainer name="after.body.start">
             <block class="MX\HelperBar\Block\HelperBar" name="mx_helperbar" as="mx_helperbar"
-                template="MX_HelperBar::helperbar.phtml"  />
+                   template="MX_HelperBar::helperbar.phtml"  />
         </referenceContainer>
     </body>
 </page>

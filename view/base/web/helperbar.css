@@ -22,7 +22,8 @@
 }
 
 #product-metadata {
-    margin-left: 25%;
+    float: right;
+    margin-right: 20px;
 }
 
 .mage-mode-developer {

@@ -1,13 +1,14 @@
 <?php
-namespace MX\HelperBar\Block\Adminhtml;
+namespace MX\HelperBar\Block;
 
-use Magento\Backend\Block\Template;
+
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig\Reader;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\App\State;
+use Magento\Framework\View\Element\Template;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
@@ -19,7 +20,6 @@ class HelperBar extends Template
     const ENVIRONMENT_NAME = 'ENVIRONMENT_NAME';
     const ENV_PARAM = 'HELPER_BAR';
     const CONFIG_DATA_PATH = "dev/debug/helper_bar_admin";
-    const ADMIN_RESOURCE = 'Magento_Backend::admin';
 
     /**
      * @var Reader $reader
@@ -107,14 +107,6 @@ class HelperBar extends Template
     {
         $storeCode = $this->storeManager->getStore()->getCode();
         return $this->scopeConfig->getValue(self::CONFIG_DATA_PATH, ScopeInterface::SCOPE_STORE, $storeCode) === '1';
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAllowed()
-    {
-        return $this->authorization->isAllowed(self::ADMIN_RESOURCE);
     }
 
     /**
