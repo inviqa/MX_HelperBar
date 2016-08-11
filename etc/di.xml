@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="MX\HelperBar\Api\CommandRepositoryInterface" type="MX\HelperBar\Model\CommandRepository" />
-    <type name="MX\HelperBar\Block\Adminhtml\HelperBar">
+    <type name="MX\HelperBar\Block\HelperBar">
         <arguments>
-            <argument name="environmentName" xsi:type="init_parameter">MX\HelperBar\Block\Adminhtml\HelperBar::ENVIRONMENT_NAME</argument>
+            <argument name="environmentName" xsi:type="init_parameter">MX\HelperBar\Block\HelperBar::ENVIRONMENT_NAME</argument>
         </arguments>
     </type>
 </config>

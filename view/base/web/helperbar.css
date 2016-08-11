@@ -22,7 +22,8 @@
 }
 
 #product-metadata {
-    margin-left: 25%;
+    float: right;
+    margin-right: 20px;
 }
 
 .mage-mode-developer {
@@ -57,10 +58,10 @@
 
 .helper-bar > .env {
     font-size: 22px;
-    padding-top: 10px;
+    margin-left: 20px;
 }
 
-.helper-bar .env.column.white {
+.vertically-centered {
     padding-top: 14px;
 }
 
@@ -68,8 +69,14 @@
     color: white;
 }
 
+#helper-bar-command-column {
+    padding-top: 11px;
+}
+
 #helper-bar-command-search {
-    width: 500px;
+    color: black;
+    margin-left: 20px;
+    width: 550px;
 }
 
 .ui-autocomplete {
