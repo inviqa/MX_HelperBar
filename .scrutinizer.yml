@@ -11,17 +11,6 @@ tools:
     php_analyzer: true
     sensiolabs_security_checker: true
 
-filter:
-    paths:
-        - 'spec/*'
-        - 'src/*'
-    excluded_paths:
-        # exclude lengthy setup scripts
-        - 'src/*/Setup/InstallData.php'
-        - 'src/*/Setup/UpgradeData.php'
-        - 'src/*/Setup/InstallSchema.php'
-        - 'src/*/Setup/UpgradeSchema.php'
-
 build:
     tests:
         override:
