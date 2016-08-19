@@ -9,7 +9,6 @@ class CommandRepository implements CommandRepositoryInterface
     private $commands;
 
     /**
-     * TODO: Use Magento\Framework\Filesystem\Directory\ReadInterface to read the commands dynamically
      *
      * @param Commands\ClearCache $clearCache
      * @param Commands\TemplatePathHints $templatePathHints
