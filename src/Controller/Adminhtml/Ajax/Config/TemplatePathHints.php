@@ -47,7 +47,7 @@ class TemplatePathHints extends Action
         $resultJson = $this->resultJsonFactory->create();
 
         $selectedOption = $this->getSelectedOption();
-        if (!$selectedOption) {
+        if ($selectedOption === false) {
             return $resultJson->setData(['success' => false, 'message' => 'Option not found']);
         }
 

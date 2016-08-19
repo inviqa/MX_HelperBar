@@ -50,6 +50,7 @@ class ClearCache implements CommandInterface
      */
     public function getOptions()
     {
+        $cacheTypes = array();
         $cacheTypes["all"] = "All";
         foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {
             $cacheTypes[$id] = $cacheType->getCacheType();
