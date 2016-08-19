@@ -1,8 +1,8 @@
 <?php
-namespace MX\HelperBar\Test\Unit\Block\Adminhtml;
+namespace MX\HelperBar\Test\Unit\Block;
 
 use \Magento\Store\Model\ScopeInterface;
-use \MX\HelperBar\Block\Adminhtml\HelperBar;
+use \MX\HelperBar\Block\HelperBar;
 use \Magento\Framework\Config\File\ConfigFilePool;
 use \Magento\Framework\App\State;
 
@@ -10,34 +10,34 @@ use \Magento\Store\Api\Data\StoreInterface;
 
 class HelperBarTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var \MX\HelperBar\Block\Adminhtml\HelperBar */
+    /** @var \MX\HelperBar\Block\HelperBar */
     protected $helperBar;
 
-    /** @var \Magento\Framework\App\DeploymentConfig\Reader|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $reader;
 
-    /** @var \Magento\Framework\App\ProductMetadataInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $productMetadataInterfaceMock;
 
-    /** @var \Magento\Backend\Block\Template\Context|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $scopeConfig;
 
-    /** @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $storeManager;
 
-    /** @var \MX\HelperBar\Api\CommandRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $commandRepository;
 
-    /** @var \Magento\Framework\Json\Helper\Data|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $jsonHelper;
 
-    /** @var \Magento\Framework\AuthorizationInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $authorization;
 
-    /** @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $urlBuilder;
 
     protected function setUp()
@@ -64,7 +64,9 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
             $this->jsonHelper,
             $this->authorization,
             $this->commandRepository,
-            $this->context
+            $this->context,
+            [],
+            ""
         );
     }
 
@@ -74,6 +76,7 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
     public function testIsEnabled($isEnabled, $appEnvSettings)
     {
         $mockStore = $this->getMockBuilder('\Magento\Store\Api\Data\StoreInterface')->disableOriginalConstructor()->getMock();
+
         $this->storeManager->expects($this->once())
             ->method('getStore')
             ->will($this->returnValue($mockStore));
@@ -129,25 +132,5 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
             ->method('getVersion')
             ->will($this->returnValue('3.0.0'));
         $this->assertSame('Magento Enterprise 3.0.0', $this->helperBar->getProductMetadata());
-    }
-
-    /**
-     * @dataProvider isAllowed
-     */
-    public function testIsAllowed($expected, $isAllowedResource)
-    {
-        $this->authorization->expects($this->once())
-            ->method('isAllowed')
-            ->with(HelperBar::ADMIN_RESOURCE)
-            ->will($this->returnValue($isAllowedResource));
-        $this->assertSame($expected, $this->helperBar->isAllowed());
-    }
-
-    public function isAllowed()
-    {
-        return [
-            "User is not allowed resource" => [false, false],
-            "User is allowed resource" => [true, true],
-        ];
     }
 }
