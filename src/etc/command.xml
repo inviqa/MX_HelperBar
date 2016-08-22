@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:MX_ModuleHelperBar:etc/command.xsd">
+    <command id="clear_cache">
+        <resource>Magento_Backend::cache</resource>
+        <label>Clear Cache</label>
+        <handle_url>helperbar/ajax_cache/massRefresh</handle_url>
+        <options>MX\HelperBar\Model\Commands\ClearCache</options>
+    </command>
+    <command id="template_path_hints">
+        <resource>Magento_Config::dev</resource>
+        <label>Template Path Hints</label>
+        <handle_url>helperbar/ajax_config/templatePathHints</handle_url>
+        <options>MX\HelperBar\Model\Commands\TemplatePathHints</options>
+    </command>
+</config>
