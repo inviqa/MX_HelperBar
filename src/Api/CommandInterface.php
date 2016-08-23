@@ -11,6 +11,13 @@ interface CommandInterface
     public function getName();
 
     /**
+     * Return the label for this command
+     *
+     * @return string
+     */
+    public function getLabel();
+
+    /**
      * Gives the url that will handle this command
      *
      * @return string

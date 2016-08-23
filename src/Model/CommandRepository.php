@@ -2,24 +2,16 @@
 namespace MX\HelperBar\Model;
 
 use MX\HelperBar\Api\CommandRepositoryInterface;
-use MX\HelperBar\Model\Commands;
 
 class CommandRepository implements CommandRepositoryInterface
 {
+    /** @var \MX\HelperBar\Api\CommandInterface[] */
     private $commands;
 
-    /**
-     *
-     * @param Commands\ClearCache $clearCache
-     * @param Commands\TemplatePathHints $templatePathHints
-     */
-    public function __construct(
-        Commands\ClearCache $clearCache,
-        Commands\TemplatePathHints $templatePathHints
-    )
+    public function __construct($commands = [])
     {
-        $this->commands[$clearCache->getName()] = $clearCache;
-        $this->commands[$templatePathHints->getName()] = $templatePathHints;
+        $this->commands = $commands;
+        $this->validateCommands();
     }
 
     /**
@@ -29,5 +21,16 @@ class CommandRepository implements CommandRepositoryInterface
     public function getAllCommands()
     {
         return $this->commands;
+    }
+
+    private function validateCommands()
+    {
+        foreach ($this->commands as $command) {
+            if (!$command instanceof \MX\HelperBar\Api\CommandInterface) {
+                throw new \InvalidArgumentException(
+                    "Invalid command type. Expected " . \MX\HelperBar\Api\CommandInterface::class
+                );
+            }
+        }
     }
 }
