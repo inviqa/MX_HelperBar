@@ -2,26 +2,16 @@
 namespace MX\HelperBar\Model;
 
 use MX\HelperBar\Api\CommandRepositoryInterface;
-use \Magento\Framework\Module\Dir;
 
 class CommandRepository implements CommandRepositoryInterface
 {
-    /** @var \MX\HelperBar\Model\Config\Reader */
-    protected $reader;
-
-    /** @var \Magento\Framework\ObjectManagerInterface */
-    protected $objectManager;
-
     /** @var \MX\HelperBar\Api\CommandInterface[] */
     private $commands;
 
-    public function __construct(
-        \MX\HelperBar\Model\Config\Reader $reader,
-        \Magento\Framework\ObjectManagerInterface $objectManager
-    )
+    public function __construct($commands = [])
     {
-        $this->reader = $reader;
-        $this->objectManager = $objectManager;
+        $this->commands = $commands;
+        $this->validateCommands();
     }
 
     /**
@@ -30,23 +20,17 @@ class CommandRepository implements CommandRepositoryInterface
      */
     public function getAllCommands()
     {
-        if (!isset($this->commands)) {
-            $this->loadCommands();
-        }
         return $this->commands;
     }
 
-    private function loadCommands()
+    private function validateCommands()
     {
-        $commands = $this->reader->read();
-        foreach ($commands as $name => $command) {
-            $this->commands[$name] = $this->objectManager->create('\MX\HelperBar\Model\Commands\Command', [
-                'resourceId' => $command['resource'],
-                'name' => $name,
-                'label' => $command['label'],
-                'handleUrl' => $command['handleUrl'],
-                'options' => $this->objectManager->create($command['options'])
-            ]);
+        foreach ($this->commands as $command) {
+            if (!$command instanceof \MX\HelperBar\Api\CommandInterface) {
+                throw new \InvalidArgumentException(
+                    "Invalid command type. Expected " . \MX\HelperBar\Api\CommandInterface::class
+                );
+            }
         }
     }
 }

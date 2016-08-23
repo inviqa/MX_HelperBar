@@ -28,19 +28,19 @@ class Command implements CommandInterface
 
     public function __construct(
         UrlInterface $urlInterface,
+        CommandOptionsInterface $options,
         $resourceId,
         $name,
         $label,
-        $handleUrl,
-        $options
+        $handleUrl
     )
     {
         $this->urlBuilder = $urlInterface;
+        $this->options = $options;
         $this->name = $name;
         $this->label = $label;
         $this->resourceId = $resourceId;
         $this->handleUrl = $handleUrl;
-        $this->options = $options;
     }
 
     /**

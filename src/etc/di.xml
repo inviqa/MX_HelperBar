@@ -6,4 +6,30 @@
             <argument name="environmentName" xsi:type="init_parameter">MX\HelperBar\Block\HelperBar::ENVIRONMENT_NAME</argument>
         </arguments>
     </type>
+    <virtualType name="clear_cache" type="MX\HelperBar\Model\Commands\Command">
+        <arguments>
+            <argument name="resourceId" xsi:type="string">Magento_Backend::cache</argument>
+            <argument name="name" xsi:type="string">clear_cache</argument>
+            <argument name="label" xsi:type="string">Clear Cache</argument>
+            <argument name="handleUrl" xsi:type="string"><![CDATA[helperbar/ajax_cache/massRefresh]]></argument>
+            <argument name="options" xsi:type="object"><![CDATA[MX\HelperBar\Model\Commands\Options\ClearCache]]></argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="template_path_hints" type="MX\HelperBar\Model\Commands\Command">
+        <arguments>
+            <argument name="resourceId" xsi:type="string">Magento_Config::dev</argument>
+            <argument name="name" xsi:type="string">template_path_hints</argument>
+            <argument name="label" xsi:type="string">Template Path Hints</argument>
+            <argument name="handleUrl" xsi:type="string"><![CDATA[helperbar/ajax_config/templatePathHints]]></argument>
+            <argument name="options" xsi:type="object"><![CDATA[MX\HelperBar\Model\Commands\Options\TemplatePathHints]]></argument>
+        </arguments>
+    </virtualType>
+    <type name="MX\HelperBar\Api\CommandRepositoryInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="clear_cache" xsi:type="object">clear_cache</item>
+                <item name="template_path_hints" xsi:type="object">template_path_hints</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
