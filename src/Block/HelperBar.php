@@ -146,11 +146,11 @@ class HelperBar extends Template
     public function getCommands()
     {
         $commands = [];
-        foreach ($this->commandRepository->getAllCommands() as $name => $command) {
+        foreach ($this->commandRepository->getAllCommands() as $command) {
             if (!$this->authorization->isAllowed($command->getResourceId())) {
                 continue;
             }
-            $commands[$name] = [
+            $commands[$command->getLabel()] = [
                 "url" => $command->getHandlerUrl(),
                 "options" => $command->getOptions()
             ];

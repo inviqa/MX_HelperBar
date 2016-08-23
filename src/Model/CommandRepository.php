@@ -2,24 +2,26 @@
 namespace MX\HelperBar\Model;
 
 use MX\HelperBar\Api\CommandRepositoryInterface;
-use MX\HelperBar\Model\Commands;
+use \Magento\Framework\Module\Dir;
 
 class CommandRepository implements CommandRepositoryInterface
 {
+    /** @var \MX\HelperBar\Model\Config\Reader */
+    protected $reader;
+
+    /** @var \Magento\Framework\ObjectManagerInterface */
+    protected $objectManager;
+
+    /** @var \MX\HelperBar\Api\CommandInterface[] */
     private $commands;
 
-    /**
-     *
-     * @param Commands\ClearCache $clearCache
-     * @param Commands\TemplatePathHints $templatePathHints
-     */
     public function __construct(
-        Commands\ClearCache $clearCache,
-        Commands\TemplatePathHints $templatePathHints
+        \MX\HelperBar\Model\Config\Reader $reader,
+        \Magento\Framework\ObjectManagerInterface $objectManager
     )
     {
-        $this->commands[$clearCache->getName()] = $clearCache;
-        $this->commands[$templatePathHints->getName()] = $templatePathHints;
+        $this->reader = $reader;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -28,6 +30,23 @@ class CommandRepository implements CommandRepositoryInterface
      */
     public function getAllCommands()
     {
+        if (!isset($this->commands)) {
+            $this->loadCommands();
+        }
         return $this->commands;
+    }
+
+    private function loadCommands()
+    {
+        $commands = $this->reader->read();
+        foreach ($commands as $name => $command) {
+            $this->commands[$name] = $this->objectManager->create('\MX\HelperBar\Model\Commands\Command', [
+                'resourceId' => $command['resource'],
+                'name' => $name,
+                'label' => $command['label'],
+                'handleUrl' => $command['handleUrl'],
+                'options' => $this->objectManager->create($command['options'])
+            ]);
+        }
     }
 }
