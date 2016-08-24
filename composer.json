@@ -25,12 +25,18 @@
     "magento/module-customer": "^100.1.0",
     "magento/module-store": "^100.1.0"
   },
+  "require-dev": {
+    "bossa/phpspec2-expect": "1.*",
+    "phpspec/phpspec": "~2.3",
+    "nagno/phpspec-bootstrap-magento2": "~1.0",
+    "phpunit/phpunit": "4.1.0"
+  },
   "autoload": {
     "files": [
-      "registration.php"
+      "src/registration.php"
     ],
     "psr-4": {
-      "MX\\HelperBar\\": ""
+      "MX\\HelperBar\\": "src/"
     }
   },
   "authors": [

@@ -25,7 +25,7 @@ class TemplatePathHints extends Action
     protected $resultJsonFactory;
 
     /**
-     * @var \MX\HelperBar\Model\Commands\TemplatePathHints
+     * @var \MX\HelperBar\Model\Commands\Options\TemplatePathHints
      */
     private $templatePathHintCommand;
 
@@ -33,7 +33,7 @@ class TemplatePathHints extends Action
         Action\Context $context,
         Config $config,
         JsonFactory $resultJsonFactory,
-        \MX\HelperBar\Model\Commands\TemplatePathHints $templatePathHintCommand
+        \MX\HelperBar\Model\Commands\Options\TemplatePathHints $templatePathHintCommand
     )
     {
         parent::__construct($context);
@@ -47,7 +47,7 @@ class TemplatePathHints extends Action
         $resultJson = $this->resultJsonFactory->create();
 
         $selectedOption = $this->getSelectedOption();
-        if (!$selectedOption) {
+        if ($selectedOption === false) {
             return $resultJson->setData(['success' => false, 'message' => 'Option not found']);
         }
 
