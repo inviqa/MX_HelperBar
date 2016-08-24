@@ -1,6 +1,6 @@
 <?php
 /**
- * @see \MX\HelperBar\Block\HelperBar
+ * @var $block \MX\HelperBar\Block\HelperBar
  */
 ?>
 <?php if ($block->isEnabled()): ?>
@@ -23,8 +23,7 @@
                     "MX_HelperBar/js/helperbar":
                     {
                         "closeSelector": "#helper-bar-close",
-                        "commandSearchSelector": "#helper-bar-command-search",
-                        "commands": <?= /* @escapeNotVerified */ $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getCommands()); ?>
+                        "commandSearchSelector": "#helper-bar-command-search"
                     }
                 }
             }
