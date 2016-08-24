@@ -100,12 +100,3 @@ Massive thanks to the Graze.com Team for inspiring this project and agreeing to 
 * Joe Meehan
 * Joe Ferrelly 
 
-#### A story with a happy ending
-This module originated from a conversation between the Graze.com team and our analytics geek, Grant Kemp. 
-They mentioned that they were experiencing difficulty with Magento 2 and Grant saw an opportunity to both help improve Magento 2.
-He shared his idea for a module within [Inviqa](https//www.inviqa.com). 
-
-From there, James Cowie and Paal Soberg jumped on board enthusiastically and helped to evolve the ideas into a more compelling product.
-This project had tremendous support from our other devs such as Alessandro Zucca and Richard Thomson who propelled it forward, drove it over the line, and made sure it looked great.
-
-Eventually it crystallised into this first version of the Helper Bar which we are delighted to open to the Magento community.
