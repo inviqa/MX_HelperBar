@@ -110,6 +110,7 @@ define([
             //auto complete initialize function
             commandSearch.autocomplete({
                 source: searchSource,
+                autoFocus: true,
                 position: { my: "left bottom", at: "left top", collision: "flip" },
                 open: function() {
                     $bodyHtml.addClass('overflow-y-hidden');
