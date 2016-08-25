@@ -7,6 +7,7 @@ use Magento\Framework\App\Cache\StateInterface;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
+use MX\HelperBar\Model\Commands\Options\ClearCache;
 
 class MassRefresh extends Action
 {
@@ -37,6 +38,11 @@ class MassRefresh extends Action
      */
     protected $resultJsonFactory;
 
+    /**
+     * @var ClearCache
+     */
+    private $clearCacheOptions;
+
 
     /**
      * @param Action\Context $context
@@ -44,19 +50,23 @@ class MassRefresh extends Action
      * @param StateInterface $cacheState
      * @param Pool $cacheFrontendPool
      * @param JsonFactory $resultJsonFactory
+     * @param ClearCache $clearCacheOptions
      */
     public function __construct(
         Action\Context $context,
         TypeListInterface $cacheTypeList,
         StateInterface $cacheState,
         Pool $cacheFrontendPool,
-        JsonFactory $resultJsonFactory
-    ) {
+        JsonFactory $resultJsonFactory,
+        ClearCache $clearCacheOptions
+    )
+    {
         parent::__construct($context);
         $this->cacheTypeList = $cacheTypeList;
         $this->cacheState = $cacheState;
         $this->cacheFrontendPool = $cacheFrontendPool;
         $this->resultJsonFactory = $resultJsonFactory;
+        $this->clearCacheOptions = $clearCacheOptions;
     }
 
     /**
@@ -100,22 +110,15 @@ class MassRefresh extends Action
 
     private function getTypes(array $labels)
     {
+        $options = $this->clearCacheOptions->getOptions();
         $cacheTypes = [];
-        foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {
-            $cacheTypes[$cacheType->getCacheType()] = $id;
-        }
-
-        if (array_search("All", $labels) !== false) {
-            return array_values($cacheTypes);
-        }
-
-        $types = [];
         foreach ($labels as $label) {
-            if(array_key_exists($label, $cacheTypes)) {
-                $types[] = $cacheTypes[$label];
-            }
+            $cacheTypes[] = array_search($label, $options);
         }
-
-        return $types;
+        if (count($cacheTypes) === 1 && $cacheTypes[0] === ClearCache::ALL) {
+            $cacheTypes = array_keys($options);
+            unset($cacheTypes[array_search('all', $cacheTypes)]);
+        }
+        return $cacheTypes;
     }
 }
