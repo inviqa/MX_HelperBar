@@ -1,9 +1,10 @@
 <?php
 /**
- * @see \MX\HelperBar\Block\HelperBar
+ * @var $block \MX\HelperBar\Block\HelperBar
  */
 ?>
 <?php $commands = $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getCommands()); ?>
+<?php $redirects = $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getRedirects()); ?>
 <?php if ($block->isEnabled()): ?>
     <div id="helper-bar" class="helper-bar helper-bar-<?= $block->getMode(); ?>">
         <span class="mage-mode column mage-mode-<?= $block->getMode(); ?>"></span>
@@ -33,7 +34,7 @@
                         "closeSelector": "#helper-bar-close",
                         "commandSearchSelector": "#helper-bar-command-search",
                         "commands": <?= /* @escapeNotVerified */ $commands ?>,
-                        "helperBarColumn": "#helper-bar-command-column"
+                        "redirects": <?= /* @escapeNotVerified */ $redirects ?>
                     }
                 }
             }

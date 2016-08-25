@@ -1,11 +1,22 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
     <preference for="MX\HelperBar\Api\CommandRepositoryInterface" type="MX\HelperBar\Model\CommandRepository" />
+    <preference for="MX\HelperBar\Api\NavigationRedirectRepositoryInterface" type="MX\HelperBar\Model\NavigationRedirectRepository" />
+    <preference for="MX\HelperBar\Api\NavigationRedirectInterface" type="MX\HelperBar\Model\Navigation\Redirect" />
+
     <type name="MX\HelperBar\Block\HelperBar">
         <arguments>
             <argument name="environmentName" xsi:type="init_parameter">MX\HelperBar\Block\HelperBar::ENVIRONMENT_NAME</argument>
         </arguments>
     </type>
+
+    <type name="\MX\HelperBar\Controller\Adminhtml\Ajax\Config\TemplatePathHints">
+        <arguments>
+            <argument name="templatePathHintCommand" xsi:type="object">template_path_hints_options</argument>
+        </arguments>
+    </type>
+
     <virtualType name="clear_cache" type="MX\HelperBar\Model\Commands\Command">
         <arguments>
             <argument name="resourceId" xsi:type="string">Magento_Backend::cache</argument>
@@ -15,16 +26,31 @@
             <argument name="options" xsi:type="object"><![CDATA[MX\HelperBar\Model\Commands\Options\ClearCache]]></argument>
         </arguments>
     </virtualType>
+
+    <virtualType name="template_path_hints_options" type="MX\HelperBar\Model\Commands\Options\PlainList">
+        <arguments>
+            <argument name="options" xsi:type="array">
+                <item name="storefront_enable" xsi:type="string">Storefront Enable</item>
+                <item name="storefront_disable" xsi:type="string">Storefront Disable</item>
+                <item name="admin_enable" xsi:type="string">Admin Enable</item>
+                <item name="admin_disable" xsi:type="string">Admin Disable</item>
+                <item name="both_enable" xsi:type="string">Both Enable</item>
+                <item name="both_disable" xsi:type="string">Both Disable</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="template_path_hints" type="MX\HelperBar\Model\Commands\Command">
         <arguments>
             <argument name="resourceId" xsi:type="string">Magento_Config::dev</argument>
             <argument name="name" xsi:type="string">template_path_hints</argument>
             <argument name="label" xsi:type="string">Template Path Hints</argument>
             <argument name="handleUrl" xsi:type="string"><![CDATA[helperbar/ajax_config/templatePathHints]]></argument>
-            <argument name="options" xsi:type="object"><![CDATA[MX\HelperBar\Model\Commands\Options\TemplatePathHints]]></argument>
+            <argument name="options" xsi:type="object">template_path_hints_options</argument>
         </arguments>
     </virtualType>
-    <type name="MX\HelperBar\Api\CommandRepositoryInterface">
+
+    <type name="MX\HelperBar\Model\CommandRepository">
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="clear_cache" xsi:type="object">clear_cache</item>
@@ -32,4 +58,30 @@
             </argument>
         </arguments>
     </type>
+
+    <virtualType name="navigation_redirect_cms_page" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">cms page</argument>
+            <argument name="path" xsi:type="string"><![CDATA[cms/page/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Cms::page</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="navigation_redirect_cms_block" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">cms block</argument>
+            <argument name="path" xsi:type="string"><![CDATA[cms/block/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Cms::block</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="MX\HelperBar\Model\NavigationRedirectRepository">
+        <arguments>
+            <argument name="navigationRedirects" xsi:type="array">
+                <item name="navigation_redirect_cms_page" xsi:type="object">navigation_redirect_cms_page</item>
+                <item name="navigation_redirect_cms_block" xsi:type="object">navigation_redirect_cms_block</item>
+            </argument>
+        </arguments>
+    </type>
+
 </config>

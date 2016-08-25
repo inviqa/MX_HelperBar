@@ -1,11 +1,12 @@
 <?php
 namespace MX\HelperBar\Model;
 
+use MX\HelperBar\Api\CommandInterface;
 use MX\HelperBar\Api\CommandRepositoryInterface;
 
 class CommandRepository implements CommandRepositoryInterface
 {
-    /** @var \MX\HelperBar\Api\CommandInterface[] */
+    /** @var CommandInterface[] */
     private $commands;
 
     public function __construct($commands = [])
@@ -16,7 +17,7 @@ class CommandRepository implements CommandRepositoryInterface
 
     /**
      * Return a list of object that implement the Command Interface
-     * @return \MX\HelperBar\Api\CommandInterface[]
+     * @return CommandInterface[]
      */
     public function getAllCommands()
     {
@@ -26,9 +27,9 @@ class CommandRepository implements CommandRepositoryInterface
     private function validateCommands()
     {
         foreach ($this->commands as $command) {
-            if (!$command instanceof \MX\HelperBar\Api\CommandInterface) {
+            if (!$command instanceof CommandInterface) {
                 throw new \InvalidArgumentException(
-                    "Invalid command type. Expected " . \MX\HelperBar\Api\CommandInterface::class
+                    "Invalid command type. Expected " . CommandInterface::class
                 );
             }
         }

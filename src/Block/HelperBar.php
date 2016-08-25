@@ -13,6 +13,7 @@ use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
 use MX\HelperBar\Api\CommandRepositoryInterface;
+use MX\HelperBar\Api\NavigationRedirectRepositoryInterface;
 
 class HelperBar extends Template
 {
@@ -60,6 +61,10 @@ class HelperBar extends Template
      * @var string
      */
     private $environmentName;
+    /**
+     * @var NavigationRedirectRepositoryInterface
+     */
+    private $navigationRedirectRepository;
 
     /**
      * HelperBar constructor.
@@ -71,8 +76,10 @@ class HelperBar extends Template
      * @param JsonHelper $jsonHelper
      * @param AuthorizationInterface $authorization
      * @param CommandRepositoryInterface $commandRepository
+     * @param NavigationRedirectRepositoryInterface $navigationRedirectRepository
      * @param Template\Context $context
      * @param array $data
+     * @param $environmentName
      */
     public function __construct(
         Reader $reader,
@@ -82,6 +89,7 @@ class HelperBar extends Template
         JsonHelper $jsonHelper,
         AuthorizationInterface $authorization,
         CommandRepositoryInterface $commandRepository,
+        NavigationRedirectRepositoryInterface $navigationRedirectRepository,
         Template\Context $context,
         array $data = [],
         $environmentName
@@ -94,6 +102,7 @@ class HelperBar extends Template
         $this->jsonHelper = $jsonHelper;
         $this->authorization = $authorization;
         $this->commandRepository = $commandRepository;
+        $this->navigationRedirectRepository = $navigationRedirectRepository;
         $this->environmentName = $environmentName;
         parent::__construct($context, $data);
     }
@@ -156,6 +165,21 @@ class HelperBar extends Template
             ];
         }
         return $commands;
+    }
+
+
+    public function getRedirects()
+    {
+        $redirects = [];
+        foreach ($this->navigationRedirectRepository->getRedirects() as $redirect) {
+            if (!$this->authorization->isAllowed($redirect->getResourceId())) {
+                continue;
+            }
+            $redirects[$redirect->getLabel()] = [
+                "url" => $redirect->getUrl()
+            ];
+        }
+        return $redirects;
     }
 
 }
