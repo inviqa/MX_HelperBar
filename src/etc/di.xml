@@ -11,6 +11,12 @@
         </arguments>
     </type>
 
+    <type name="\MX\HelperBar\Controller\Adminhtml\Ajax\Config\TemplatePathHints">
+        <arguments>
+            <argument name="templatePathHintCommand" xsi:type="object">template_path_hints_options</argument>
+        </arguments>
+    </type>
+
     <virtualType name="clear_cache" type="MX\HelperBar\Model\Commands\Command">
         <arguments>
             <argument name="resourceId" xsi:type="string">Magento_Backend::cache</argument>

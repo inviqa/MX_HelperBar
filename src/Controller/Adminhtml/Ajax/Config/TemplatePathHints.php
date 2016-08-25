@@ -4,6 +4,7 @@ namespace MX\HelperBar\Controller\Adminhtml\Ajax\Config;
 use Magento\Backend\App\Action;
 use Magento\Config\Model\ResourceModel\Config;
 use Magento\Framework\Controller\Result\JsonFactory;
+use MX\HelperBar\Model\Commands\Options\PlainList;
 
 class TemplatePathHints extends Action
 {
@@ -25,7 +26,7 @@ class TemplatePathHints extends Action
     protected $resultJsonFactory;
 
     /**
-     * @var \MX\HelperBar\Model\Commands\Options\TemplatePathHints
+     * @var PlainList
      */
     private $templatePathHintCommand;
 
@@ -33,7 +34,7 @@ class TemplatePathHints extends Action
         Action\Context $context,
         Config $config,
         JsonFactory $resultJsonFactory,
-        \MX\HelperBar\Model\Commands\Options\TemplatePathHints $templatePathHintCommand
+        PlainList $templatePathHintCommand
     )
     {
         parent::__construct($context);
