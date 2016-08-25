@@ -12,8 +12,6 @@ define([
             //selectors
             closeSelector: "",
             commandSearchSelector: "",
-            //command text settings
-            commandArgumentSeparator: "for:",
             commands: [],
             redirects: []
         },
@@ -39,16 +37,19 @@ define([
          * @returns {*}
          */
         populateCommands: function(searchSource) {
-            for(var prefix in this.options.commands) {
-                if(!this.options.commands.hasOwnProperty(prefix)) continue;
-                var beforeArguments = prefix + " " + this.options.commandArgumentSeparator + " ";
-                var command = this.options.commands[prefix];
+            for(var commandName in this.options.commands) {
+                if(!this.options.commands.hasOwnProperty(commandName)) continue;
+                var command = this.options.commands[commandName];
                 for(var key in command.options) {
                     if(!command.options.hasOwnProperty(key)) continue;
                     searchSource.push({
-                        label: beforeArguments + command.options[key],
-                        value: beforeArguments + command.options[key],
-                        object: command,
+                        label: commandName + ' ' + command.options[key],
+                        value: commandName + ' ' + command.options[key],
+                        object: {
+                            option: command.options[key],
+                            command: commandName,
+                            url: command.url
+                        },
                         isAjax: true
                     });
                 }
@@ -118,8 +119,7 @@ define([
                 },
                 select: function(e, ui) {
                     if (ui.item.isAjax === true) {
-                        var selectedOption = ui.item.value;
-                        var ajaxController = _this.getAjaxController(selectedOption);
+                        var ajaxController = _this.getAjaxController(ui.item.object);
                         if (ajaxController === false) return;
                         me.sendAjaxRequest(ajaxController);
                     } else {
@@ -152,22 +152,14 @@ define([
         },
         /**
          * Return Ajax controller for selected option from list
-         * @param selectedOption
+         * @param commandObject
          * @returns {*}
          */
-        getAjaxController: function(selectedOption) {
-            var splitCommandArgument = selectedOption.split(this.options.commandArgumentSeparator).map(function(ele){return ele.trim()}),
-                command = splitCommandArgument[0],
-                argument = splitCommandArgument[1];
-
-            if (command === undefined || argument === undefined) return false;
-
-            var url = this.options.commands[command].url;
-
+        getAjaxController: function(commandObject) {
             return {
-                url: url,
+                url: commandObject.url,
                 data: {
-                    labels: argument,
+                    labels: commandObject.option,
                     massaction_prepare_key: 'labels'
                 }
             };

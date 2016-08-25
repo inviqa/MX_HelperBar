@@ -11,9 +11,15 @@
         </arguments>
     </type>
 
-    <type name="\MX\HelperBar\Controller\Adminhtml\Ajax\Config\TemplatePathHints">
+    <type name="MX\HelperBar\Controller\Adminhtml\Ajax\Config\TemplatePathHints">
         <arguments>
             <argument name="templatePathHintCommand" xsi:type="object">template_path_hints_options</argument>
+        </arguments>
+    </type>
+
+    <type name="MX\HelperBar\Controller\Adminhtml\Ajax\Cache\MassRefresh">
+        <arguments>
+            <argument name="clearCacheOptions" xsi:type="object"><![CDATA[MX\HelperBar\Model\Commands\Options\ClearCache]]></argument>
         </arguments>
     </type>
 
@@ -21,7 +27,7 @@
         <arguments>
             <argument name="resourceId" xsi:type="string">Magento_Backend::cache</argument>
             <argument name="name" xsi:type="string">clear_cache</argument>
-            <argument name="label" xsi:type="string">Clear Cache</argument>
+            <argument name="label" xsi:type="string">cc</argument>
             <argument name="handleUrl" xsi:type="string"><![CDATA[helperbar/ajax_cache/massRefresh]]></argument>
             <argument name="options" xsi:type="object"><![CDATA[MX\HelperBar\Model\Commands\Options\ClearCache]]></argument>
         </arguments>
@@ -30,12 +36,12 @@
     <virtualType name="template_path_hints_options" type="MX\HelperBar\Model\Commands\Options\PlainList">
         <arguments>
             <argument name="options" xsi:type="array">
-                <item name="storefront_enable" xsi:type="string">Storefront Enable</item>
-                <item name="storefront_disable" xsi:type="string">Storefront Disable</item>
-                <item name="admin_enable" xsi:type="string">Admin Enable</item>
-                <item name="admin_disable" xsi:type="string">Admin Disable</item>
-                <item name="both_enable" xsi:type="string">Both Enable</item>
-                <item name="both_disable" xsi:type="string">Both Disable</item>
+                <item name="storefront_enable" xsi:type="string">front en</item>
+                <item name="storefront_disable" xsi:type="string">front dis</item>
+                <item name="admin_enable" xsi:type="string">admin en</item>
+                <item name="admin_disable" xsi:type="string">admin dis</item>
+                <item name="both_enable" xsi:type="string">en</item>
+                <item name="both_disable" xsi:type="string">dis</item>
             </argument>
         </arguments>
     </virtualType>
@@ -44,7 +50,7 @@
         <arguments>
             <argument name="resourceId" xsi:type="string">Magento_Config::dev</argument>
             <argument name="name" xsi:type="string">template_path_hints</argument>
-            <argument name="label" xsi:type="string">Template Path Hints</argument>
+            <argument name="label" xsi:type="string">tph</argument>
             <argument name="handleUrl" xsi:type="string"><![CDATA[helperbar/ajax_config/templatePathHints]]></argument>
             <argument name="options" xsi:type="object">template_path_hints_options</argument>
         </arguments>

@@ -6,6 +6,8 @@ use \MX\HelperBar\Api\CommandOptionsInterface;
 
 class ClearCache implements CommandOptionsInterface
 {
+    const ALL = "all";
+
     /**
      * @var TypeListInterface
      */
@@ -24,9 +26,9 @@ class ClearCache implements CommandOptionsInterface
     public function getOptions()
     {
         $cacheTypes = array();
-        $cacheTypes["all"] = "All";
+        $cacheTypes[self::ALL] = "";
         foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {
-            $cacheTypes[$id] = $cacheType->getCacheType();
+            $cacheTypes[$id] = strtolower($cacheType->getCacheType());
         }
 
         return $cacheTypes;
