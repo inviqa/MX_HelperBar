@@ -1,6 +1,15 @@
 {
   "name": "mx/module-helper-bar",
   "description": "Displays the magento product metadata and has an integrated commandline tool with various command shortcuts.",
+  "keywords": [
+    "mx",
+    "inviqa",
+    "helper",
+    "bar",
+    "toolbar",
+    "magento",
+    "magento2"
+  ],
   "version": "1.0.0",
   "type": "magento2-module",
   "license": [
