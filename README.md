@@ -4,6 +4,7 @@ The **MX Helper** Bar for Magento 2 is intended to help store admins and operato
 
  - showing at a glance which environment(Pipeline instance) they are using so they won't inadvertently make the changes to the wrong environment.  
  - acting as a super shortcut bar which allows you to quickly search and perform a list of common tasks, such as clearing cache types, without having to navigate away from the page.
+ - **New Feature:** Customizable Commands- easily add your own shortcuts for your customers, or yourself to speed up M2
 
 ![Demo of Bob, the quick shortcut helper bar for Magento 2](use.gif)
 
