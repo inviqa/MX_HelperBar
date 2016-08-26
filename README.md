@@ -5,42 +5,8 @@ The **MX Helper** Bar for Magento 2 is intended to help store admins and operato
  - showing at a glance which environment(Pipeline instance) they are using so they won't inadvertently make the changes to the wrong environment.  
  - acting as a super shortcut bar which allows you to quickly search and perform a list of common tasks, such as clearing cache types, without having to navigate away from the page.
 
-![Demo of Bob, the quick shortcut helper bar for Magento 2](https://github.com/inviqa/MX_HelperBar/raw/master/use.gif)
+![Demo of Bob, the quick shortcut helper bar for Magento 2](use.gif)
 
-## Installing
-Then add the module to the require section of the composer file:
-
-```shell
-  $ ./php composer.phar require "mx/module-helper-bar": "~1.0.1"
-```
-
-This command will add:
-
-```json
-  "require": {
-    "mx/module-helper-bar": "~1.0.1"
-  }
-```
-
-
-## Enable
-
-Once the module is added as dependency, run the Magento setup module, clear the cache and make sure the module status is enabled.
-
-```
-  $ bin/magento setup:upgrade
-  $ bin/magento c:c
-  $ bin/magento module:status MX_HelperBar
-```
-
-Now that the module is enabled, you need to make the Helper Bar visible.
-
-![video of how to install ](https://github.com/inviqa/MX_HelperBar/raw/master/install.gif)
-
-Navigate to: _Stores -> Configuration -> Advanced -> Developer -> Debug_
-and select _"Yes"_ for the option with label _"Enabled Helper Bar for Admin"_
-
-Then refresh the page and you will see the Helper Bar at the bottom of the screen. If you wish, you can temporarily hide it by pressing the 'X' or using CTRL + ` as a keyboard shortcut.
 
 ## Commands
 
@@ -75,6 +41,41 @@ For instance choose _nav cms block_ to be redirected to the Cms Blocks page.
 If you want to contribute adding more shortcuts you can easily do so by editing the _etc/di.xml_ file.
 
 Add a new _virtualType_ (see as an example _navigation_redirect_cms_page_) and inject it as a new argument in the type _MX\HelperBar\Model\NavigationRedirectRepository_
+
+## Installing
+Then add the module to the require section of the composer file:
+
+```shell
+  $ ./php composer.phar require "mx/module-helper-bar": "~1.0.1"
+```
+
+This command will add:
+
+```json
+  "require": {
+    "mx/module-helper-bar": "~1.0.1"
+  }
+```
+
+
+## Enable
+
+Once the module is added as dependency, run the Magento setup module, clear the cache and make sure the module status is enabled.
+
+```
+  $ bin/magento setup:upgrade
+  $ bin/magento c:c
+  $ bin/magento module:status MX_HelperBar
+```
+
+Now that the module is enabled, you need to make the Helper Bar visible.
+
+![video of how to install ](install.gif)
+
+Navigate to: _Stores -> Configuration -> Advanced -> Developer -> Debug_
+and select _"Yes"_ for the option with label _"Enabled Helper Bar for Admin"_
+
+Then refresh the page and you will see the Helper Bar at the bottom of the screen. If you wish, you can temporarily hide it by pressing the 'X' or using CTRL + ` as a keyboard shortcut.
 
 ## Contributing
 By making this open source we hope others will gain value from it and use it as part of their projects.
