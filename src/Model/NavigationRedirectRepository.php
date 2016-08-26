@@ -2,11 +2,12 @@
 namespace MX\HelperBar\Model;
 
 use MX\HelperBar\Api\NavigationRedirectInterface;
+use MX\HelperBar\Api\NavigationRedirectRepositoryInterface;
 
-class NavigationRedirectRepository implements \MX\HelperBar\Api\NavigationRedirectRepositoryInterface
+class NavigationRedirectRepository implements NavigationRedirectRepositoryInterface
 {
     /**
-     * @var NavigationRedirectInterface
+     * @var NavigationRedirectInterface[]
      */
     private $navigationRedirects;
 
@@ -23,7 +24,7 @@ class NavigationRedirectRepository implements \MX\HelperBar\Api\NavigationRedire
     /**
      * Return an array of NavigationRedirect objects
      *
-     * @return NavigationRedirectInterface
+     * @return NavigationRedirectInterface[]
      */
     public function getRedirects()
     {
