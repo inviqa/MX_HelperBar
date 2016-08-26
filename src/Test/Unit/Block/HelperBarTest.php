@@ -40,6 +40,9 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $urlBuilder;
 
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    protected $navigationRedirectRepository;
+
     protected function setUp()
     {
         $this->reader = $this->getMockBuilder('\Magento\Framework\App\DeploymentConfig\Reader')->disableOriginalConstructor()->getMock();
@@ -48,13 +51,14 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
         $this->scopeConfig = $this->getMockBuilder('\Magento\Framework\App\Config\ScopeConfigInterface')->disableOriginalConstructor()->getMock();
         $this->storeManager = $this->getMockBuilder('\Magento\Store\Model\StoreManagerInterface')->disableOriginalConstructor()->getMock();
         $this->commandRepository = $this->getMockBuilder('\MX\HelperBar\Api\CommandRepositoryInterface')->disableOriginalConstructor()->getMock();
+        $this->navigationRedirectRepository = $this->getMockBuilder('\MX\HelperBar\Api\NavigationRedirectRepositoryInterface')->disableOriginalConstructor()->getMock();
         $this->jsonHelper = $this->getMockBuilder('\Magento\Framework\Json\Helper\Data')->disableOriginalConstructor()->getMock();
         $this->authorization = $this->getMockBuilder('\Magento\Framework\AuthorizationInterface')->disableOriginalConstructor()->getMock();
         $this->urlBuilder = $this->getMockBuilder('Magento\Framework\Url')->disableOriginalConstructor()->getMock();
 
         $this->context->expects($this->any())
             ->method('getUrlBuilder')
-            ->will($this->returnValue($this->urlBuilder));
+            ->willReturn($this->urlBuilder);
 
         $this->helperBar = new HelperBar(
             $this->reader,
@@ -64,6 +68,7 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
             $this->jsonHelper,
             $this->authorization,
             $this->commandRepository,
+            $this->navigationRedirectRepository,
             $this->context,
             [],
             ""
@@ -79,12 +84,12 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
 
         $this->storeManager->expects($this->once())
             ->method('getStore')
-            ->will($this->returnValue($mockStore));
+            ->willReturn($mockStore);
 
         $this->scopeConfig->expects($this->once())
             ->method('getValue')
             ->with(HelperBar::CONFIG_DATA_PATH, ScopeInterface::SCOPE_STORE, null)
-            ->will($this->returnValue($appEnvSettings));
+            ->willReturn($appEnvSettings);
 
         $this->assertSame($isEnabled, $this->helperBar->isEnabled());
     }
@@ -106,7 +111,7 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
         $this->reader->expects($this->once())
             ->method('load')
             ->with(ConfigFilePool::APP_ENV)
-            ->will($this->returnValue($environment));
+            ->willReturn($environment);
         $this->assertSame($mode, $this->helperBar->getMode());
     }
 
@@ -124,13 +129,75 @@ class HelperBarTest extends \PHPUnit_Framework_TestCase
     {
         $this->productMetadataInterfaceMock->expects($this->once())
             ->method('getName')
-            ->will($this->returnValue('Magento'));
+            ->willReturn('Magento');
         $this->productMetadataInterfaceMock->expects($this->once())
             ->method('getEdition')
-            ->will($this->returnValue('Enterprise'));
+            ->willReturn('Enterprise');
         $this->productMetadataInterfaceMock->expects($this->once())
             ->method('getVersion')
-            ->will($this->returnValue('3.0.0'));
+            ->willReturn('3.0.0');
         $this->assertSame('Magento Enterprise 3.0.0', $this->helperBar->getProductMetadata());
     }
+
+    public function testGetCommands()
+    {
+        /** @var \PHPUnit_Framework_MockObject_MockObject $mockNotAllowedCommand */
+        $mockNotAllowedCommand = $this->getMockBuilder('\MX\HelperBar\Api\CommandInterface')->disableOriginalConstructor()->getMock();
+        $mockNotAllowedCommand->expects($this->once())->method('getResourceId')->willReturn('a-resource-id');
+        $mockNotAllowedCommand->expects($this->never())->method('getLabel');
+        $mockNotAllowedCommand->expects($this->never())->method('getHandlerUrl');
+        $mockNotAllowedCommand->expects($this->never())->method('getOptions');
+
+        /** @var \PHPUnit_Framework_MockObject_MockObject $mockAllowedCommand */
+        $mockAllowedCommand = $this->getMockBuilder('\MX\HelperBar\Api\CommandInterface')->disableOriginalConstructor()->getMock();
+        $mockAllowedCommand->expects($this->once())->method('getResourceId')->willReturn('b-resource-id');
+        $mockAllowedCommand->expects($this->once())->method('getLabel')->willReturn('b-label');
+        $mockAllowedCommand->expects($this->once())->method('getHandlerUrl')->willReturn('b-url');
+        $mockAllowedCommand->expects($this->once())->method('getOptions')->willReturn(['x', 'y', 'z']);
+
+        $this->authorization->expects($this->at(0))->method('isAllowed')->with('a-resource-id')->willReturn(false);
+        $this->authorization->expects($this->at(1))->method('isAllowed')->with('b-resource-id')->willReturn(true);
+
+        $this->commandRepository->expects($this->once())
+            ->method('getAllCommands')
+            ->willReturn([$mockNotAllowedCommand, $mockAllowedCommand]);
+        $expectedCommands = [
+            'b-label' => [
+                'url' => 'b-url',
+                'options' => [
+                    'x', 'y', 'z'
+                ]
+            ]
+        ];
+        $this->assertSame($expectedCommands, $this->helperBar->getCommands());
+    }
+
+    public function testGetRedirects()
+    {
+        /** @var \PHPUnit_Framework_MockObject_MockObject $mockNotAllowedRedirect */
+        $mockNotAllowedRedirect = $this->getMockBuilder('\MX\HelperBar\Api\NavigationRedirectInterface')->disableOriginalConstructor()->getMock();
+        $mockNotAllowedRedirect->expects($this->once())->method('getResourceId')->willReturn('a-resource-id');
+        $mockNotAllowedRedirect->expects($this->never())->method('getLabel');
+        $mockNotAllowedRedirect->expects($this->never())->method('getUrl');
+
+        /** @var \PHPUnit_Framework_MockObject_MockObject $mockAllowedRedirect */
+        $mockAllowedRedirect = $this->getMockBuilder('\MX\HelperBar\Api\NavigationRedirectInterface')->disableOriginalConstructor()->getMock();
+        $mockAllowedRedirect->expects($this->once())->method('getResourceId')->willReturn('b-resource-id');
+        $mockAllowedRedirect->expects($this->once())->method('getLabel')->willReturn('b-label');
+        $mockAllowedRedirect->expects($this->once())->method('getUrl')->willReturn('b-url');
+
+        $this->authorization->expects($this->at(0))->method('isAllowed')->with('a-resource-id')->willReturn(false);
+        $this->authorization->expects($this->at(1))->method('isAllowed')->with('b-resource-id')->willReturn(true);
+
+        $this->navigationRedirectRepository->expects($this->once())
+            ->method('getRedirects')
+            ->willReturn([$mockNotAllowedRedirect, $mockAllowedRedirect]);
+        $expectedRedirects = [
+            'b-label' => [
+                'url' => 'b-url'
+            ]
+        ];
+        $this->assertSame($expectedRedirects, $this->helperBar->getRedirects());
+    }
+
 }

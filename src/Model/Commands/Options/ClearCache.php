@@ -25,12 +25,12 @@ class ClearCache implements CommandOptionsInterface
      */
     public function getOptions()
     {
-        $cacheTypes = array();
-        $cacheTypes[self::ALL] = "";
-        foreach ($this->cacheTypeList->getTypes() as $id => $cacheType) {
-            $cacheTypes[$id] = strtolower($cacheType->getCacheType());
-        }
+        $cacheTypeList = array_map([$this, 'getCacheTypeLowerCase'], $this->cacheTypeList->getTypes());
+        return array_merge([self::ALL => ''], $cacheTypeList);
+    }
 
-        return $cacheTypes;
+    public function getCacheTypeLowerCase($cacheType)
+    {
+        return strtolower($cacheType->getCacheType());
     }
 }
