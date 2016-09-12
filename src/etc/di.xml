@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="MX\HelperBar\Api\CommandRepositoryInterface" type="MX\HelperBar\Model\CommandRepository" />
+    <preference for="MX\HelperBar\Api\NavigationRedirectRepositoryInterface" type="MX\HelperBar\Model\NavigationRedirectRepository" />
+    <preference for="MX\HelperBar\Api\NavigationRedirectInterface" type="MX\HelperBar\Model\Navigation\Redirect" />
+
+    <type name="MX\HelperBar\Block\HelperBar">
+        <arguments>
+            <argument name="environmentName" xsi:type="init_parameter">MX\HelperBar\Block\HelperBar::ENVIRONMENT_NAME</argument>
+        </arguments>
+    </type>
+
+    <type name="MX\HelperBar\Controller\Adminhtml\Ajax\Config\TemplatePathHints">
+        <arguments>
+            <argument name="templatePathHintCommand" xsi:type="object">template_path_hints_options</argument>
+        </arguments>
+    </type>
+
+    <type name="MX\HelperBar\Controller\Adminhtml\Ajax\Cache\MassRefresh">
+        <arguments>
+            <argument name="clearCacheOptions" xsi:type="object"><![CDATA[MX\HelperBar\Model\Commands\Options\ClearCache]]></argument>
+        </arguments>
+    </type>
+
+    <virtualType name="clear_cache" type="MX\HelperBar\Model\Commands\Command">
+        <arguments>
+            <argument name="resourceId" xsi:type="string">Magento_Backend::cache</argument>
+            <argument name="name" xsi:type="string">clear_cache</argument>
+            <argument name="label" xsi:type="string">cc</argument>
+            <argument name="handleUrl" xsi:type="string"><![CDATA[helperbar/ajax_cache/massRefresh]]></argument>
+            <argument name="options" xsi:type="object"><![CDATA[MX\HelperBar\Model\Commands\Options\ClearCache]]></argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="template_path_hints_options" type="MX\HelperBar\Model\Commands\Options\PlainList">
+        <arguments>
+            <argument name="options" xsi:type="array">
+                <item name="storefront_enable" xsi:type="string">front en</item>
+                <item name="storefront_disable" xsi:type="string">front dis</item>
+                <item name="admin_enable" xsi:type="string">admin en</item>
+                <item name="admin_disable" xsi:type="string">admin dis</item>
+                <item name="both_enable" xsi:type="string">en</item>
+                <item name="both_disable" xsi:type="string">dis</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="template_path_hints" type="MX\HelperBar\Model\Commands\Command">
+        <arguments>
+            <argument name="resourceId" xsi:type="string">Magento_Config::dev</argument>
+            <argument name="name" xsi:type="string">template_path_hints</argument>
+            <argument name="label" xsi:type="string">tph</argument>
+            <argument name="handleUrl" xsi:type="string"><![CDATA[helperbar/ajax_config/templatePathHints]]></argument>
+            <argument name="options" xsi:type="object">template_path_hints_options</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="MX\HelperBar\Model\CommandRepository">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="clear_cache" xsi:type="object">clear_cache</item>
+                <item name="template_path_hints" xsi:type="object">template_path_hints</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="navigation_redirect_cms_page" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">cms page</argument>
+            <argument name="path" xsi:type="string"><![CDATA[cms/page/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Cms::page</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="navigation_redirect_cms_block" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">cms block</argument>
+            <argument name="path" xsi:type="string"><![CDATA[cms/block/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Cms::block</argument>
+        </arguments>
+    </virtualType>
+
+
+    <virtualType name="navigation_redirect_products_catalog" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">pro catal</argument>
+            <argument name="path" xsi:type="string"><![CDATA[catalog/product/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Catalog::catalog</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="navigation_redirect_products_categories" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">pro categ</argument>
+            <argument name="path" xsi:type="string"><![CDATA[catalog/category/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Catalog::categories</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="navigation_redirect_sales_order" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">sal order</argument>
+            <argument name="path" xsi:type="string"><![CDATA[sales/order/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Sales::sales_order</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="navigation_redirect_sales_invoice" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">sal invoice</argument>
+            <argument name="path" xsi:type="string"><![CDATA[sales/invoice/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Sales::sales_invoice</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="navigation_redirect_report_sales" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">rep sales</argument>
+            <argument name="path" xsi:type="string"><![CDATA[reports/report_sales/sales/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Reports::salesroot_sales</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="navigation_redirect_report_lowstock" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">rep lowst</argument>
+            <argument name="path" xsi:type="string"><![CDATA[reports/report_product/lowstock/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Reports::lowstock</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="navigation_redirect_admin_system_config" type="MX\HelperBar\Model\Navigation\Redirect">
+        <arguments>
+            <argument name="label" xsi:type="string">sto config</argument>
+            <argument name="path" xsi:type="string"><![CDATA[adminhtml/system_config/index]]></argument>
+            <argument name="resourceId" xsi:type="string">Magento_Config::config</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="MX\HelperBar\Model\NavigationRedirectRepository">
+        <arguments>
+            <argument name="navigationRedirects" xsi:type="array">
+                <item name="navigation_redirect_cms_page" xsi:type="object">navigation_redirect_cms_page</item>
+                <item name="navigation_redirect_cms_block" xsi:type="object">navigation_redirect_cms_block</item>
+                <item name="navigation_redirect_products_catalog" xsi:type="object">navigation_redirect_products_catalog</item>
+                <item name="navigation_redirect_products_categories" xsi:type="object">navigation_redirect_products_categories</item>
+                <item name="navigation_redirect_sales_order" xsi:type="object">navigation_redirect_sales_order</item>
+                <item name="navigation_redirect_sales_invoice" xsi:type="object">navigation_redirect_sales_invoice</item>
+                <item name="navigation_redirect_report_sales" xsi:type="object">navigation_redirect_report_sales</item>
+                <item name="navigation_redirect_report_lowstock" xsi:type="object">navigation_redirect_report_lowstock</item>
+                <item name="navigation_redirect_admin_system_config" xsi:type="object">navigation_redirect_admin_system_config</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>

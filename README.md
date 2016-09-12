@@ -4,21 +4,57 @@ The **MX Helper** Bar for Magento 2 is intended to help store admins and operato
 
  - showing at a glance which environment(Pipeline instance) they are using so they won't inadvertently make the changes to the wrong environment.  
  - acting as a super shortcut bar which allows you to quickly search and perform a list of common tasks, such as clearing cache types, without having to navigate away from the page.
+ - **New Feature:** Customizable Commands- easily add your own shortcuts for your customers, or yourself to speed up M2
 
-![Demo of Bob, the quick shortcut helper bar for Magento 2](https://github.com/inviqa/MX_HelperBar/raw/master/use.gif)
+![Demo of Bob, the quick shortcut helper bar for Magento 2](use.gif)
+
+
+## Commands
+
+What follows is a list of the commands currently available. This list will grow and get better with time (like wine!).
+
+### Clear Cache (cc)
+
+This command will allow you to refresh cache types as if you were doing it from the Magento _Cache Management_ page.
+
+Start typing 'cc' in the Helper Bar textbox to see the list of available commmands. All the following are valid commands:
+
+```
+  > cc
+  > cc configuration
+  > cc database ddl operations
+```
+
+### Template Path and Block Hints (tph)
+
+This command allow you to enable or disable template path hints as you were doing it from _Stores -> Configuration -> Advanced -> Developer -> Debug_
+
+For instance choose _tph front en_ and this will set:
+_Enabled Template Path Hints for Storefront_ and _Add Block Names to Hints_ to 'Yes'
+
+instead, if you choose _tph en_ this will enable the template hints on the storefront and in the adminhtml site area
+
+### Navigation shortcut (nav)
+
+The navigation shortcut commands allow you to quickly navigate to other magento pages.
+For instance choose _nav cms block_ to be redirected to the Cms Blocks page.
+
+If you want to contribute adding more shortcuts you can easily do so by editing the _etc/di.xml_ file.
+
+Add a new _virtualType_ (see as an example _navigation_redirect_cms_page_) and inject it as a new argument in the type _MX\HelperBar\Model\NavigationRedirectRepository_
 
 ## Installing
 Then add the module to the require section of the composer file:
 
 ```shell
-  $ ./php composer.phar require "mx/module-helper-bar": "~1.0.0"
+  $ ./php composer.phar require "mx/module-helper-bar": "~1.0.1"
 ```
 
 This command will add:
 
 ```json
   "require": {
-    "mx/module-helper-bar": "~1.0.0"
+    "mx/module-helper-bar": "~1.0.1"
   }
 ```
 
@@ -35,35 +71,12 @@ Once the module is added as dependency, run the Magento setup module, clear the 
 
 Now that the module is enabled, you need to make the Helper Bar visible.
 
-![video of how to install ](https://github.com/inviqa/MX_HelperBar/raw/master/install.gif)
+![video of how to install ](install.gif)
 
 Navigate to: _Stores -> Configuration -> Advanced -> Developer -> Debug_
 and select _"Yes"_ for the option with label _"Enabled Helper Bar for Admin"_
 
 Then refresh the page and you will see the Helper Bar at the bottom of the screen. If you wish, you can temporarily hide it by pressing the 'X' or using CTRL + ` as a keyboard shortcut.
-
-## Commands
-
-What follows is a list of the commands currently available. This list will grow and get better with time (like wine!).
-
-### Clear Cache
-
-This command will allow you to refresh cache types as if you were doing it from the Magento _Cache Management_ page.
-
-Start typing 'Cache' in the Helper Bar textbox to see the list of available commmands. All the following are valid commands:
-
-```
-  > Clear Cache for: All
-  > Clear Cache for: Configuration, Layouts, Blocks HTML output
-  > Clear Cache for: Database DDL operations
-```
-
-### Template Path and Block Hints
-
-This command allow you to enable or disable template path hints as you were doing it from _Stores -> Configuration -> Advanced -> Developer -> Debug_
-
-For instance choose _Template Path Hints for: Storefront Enable_ and this will set:
-_Enabled Template Path Hints for Storefront_ and _Add Block Names to Hints_ to 'Yes'
 
 ## Contributing
 By making this open source we hope others will gain value from it and use it as part of their projects.

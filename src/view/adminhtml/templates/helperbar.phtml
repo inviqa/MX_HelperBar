@@ -1,0 +1,43 @@
+<?php
+/**
+ * @var $block \MX\HelperBar\Block\HelperBar
+ */
+?>
+<?php $commands = $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getCommands()); ?>
+<?php $redirects = $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getRedirects()); ?>
+<?php if ($block->isEnabled()): ?>
+    <div id="helper-bar" class="helper-bar helper-bar-<?= $block->getMode(); ?>">
+        <span class="mage-mode column mage-mode-<?= $block->getMode(); ?>"></span>
+
+        <span class="env column white vertically-centered">
+            <?= $block->getEnvironmentName(); ?>
+        </span>
+
+        <?php if (count($commands) > 0): ?>
+            <span id="helper-bar-command-column" class="env column white">
+                <?= __("QuickRun") . ':'?><input id="helper-bar-command-search"
+                                                 placeholder="<?= __('Start typing to enter a  quick Command eg : cc') ?>">
+            </span>
+        <?php endif; ?>
+
+        <span id="helper-bar-close" class="helper-bar-close" title="CTRL + `">X</span>
+
+        <span id="product-metadata" class="env column white vertically-centered">
+            <?= $block->getProductMetadata(); ?>
+        </span>
+
+        <script type="text/x-magento-init">
+            {
+                "#helper-bar": {
+                    "MX_HelperBar/js/helperbar":
+                    {
+                        "closeSelector": "#helper-bar-close",
+                        "commandSearchSelector": "#helper-bar-command-search",
+                        "commands": <?= /* @escapeNotVerified */ $commands ?>,
+                        "redirects": <?= /* @escapeNotVerified */ $redirects ?>
+                    }
+                }
+            }
+        </script>
+    </div>
+<?php endif; ?>
